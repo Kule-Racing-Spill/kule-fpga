@@ -19,7 +19,19 @@ proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
  "[file normalize "$origin_dir/src/design/top.sv"]"\
+ "[file normalize "$origin_dir/src/design/screen-driver/lcd/lcd_signals.sv"]"\
+ "[file normalize "$origin_dir/src/design/screen-driver/vga/vga_signals.sv"]"\
+ "[file normalize "$origin_dir/src/design/screen-driver/lcd/lcd_drawer.sv"]"\
+ "[file normalize "$origin_dir/src/design/screen-driver/screen_driver.sv"]"\
+ "[file normalize "$origin_dir/src/design/screen-driver/lcd/lcd_driver.sv"]"\
+ "[file normalize "$origin_dir/src/design/screen-driver/vga/vga_drawer.sv"]"\
+ "[file normalize "$origin_dir/src/design/screen-driver/vga/vga_driver.sv"]"\
  "[file normalize "$origin_dir/src/constraints/7a100t.xdc"]"\
+ "[file normalize "$origin_dir/src/testbenches/screen-driver/lcd/lcd_signals_tb.sv"]"\
+ "[file normalize "$origin_dir/src/testbenches/screen-driver/vga/vga_signals_tb.sv"]"\
+ "[file normalize "$origin_dir/src/testbenches/screen-driver/lcd/lcd_drawer_tb.sv"]"\
+ "[file normalize "$origin_dir/src/testbenches/screen-driver/vga/vga_drawer_tb.sv"]"\
+ "[file normalize "$origin_dir/src/testbenches/top_tb.sv"]"\
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -144,6 +156,8 @@ set_property -name "simulator.xsim_gcc_version" -value "9.3.0" -objects $obj
 set_property -name "simulator.xsim_version" -value "2023.1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "sim_compile_state" -value "1" -objects $obj
+set_property -name "source_mgmt_mode" -value "DisplayOnly" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "2" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -154,11 +168,53 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 set obj [get_filesets sources_1]
 set files [list \
  [file normalize "${origin_dir}/src/design/top.sv"] \
+ [file normalize "${origin_dir}/src/design/screen-driver/lcd/lcd_signals.sv"] \
+ [file normalize "${origin_dir}/src/design/screen-driver/vga/vga_signals.sv"] \
+ [file normalize "${origin_dir}/src/design/screen-driver/lcd/lcd_drawer.sv"] \
+ [file normalize "${origin_dir}/src/design/screen-driver/screen_driver.sv"] \
+ [file normalize "${origin_dir}/src/design/screen-driver/lcd/lcd_driver.sv"] \
+ [file normalize "${origin_dir}/src/design/screen-driver/vga/vga_drawer.sv"] \
+ [file normalize "${origin_dir}/src/design/screen-driver/vga/vga_driver.sv"] \
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
 set file "$origin_dir/src/design/top.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/design/screen-driver/lcd/lcd_signals.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/design/screen-driver/vga/vga_signals.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/design/screen-driver/lcd/lcd_drawer.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/design/screen-driver/screen_driver.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/design/screen-driver/lcd/lcd_driver.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/design/screen-driver/vga/vga_drawer.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/design/screen-driver/vga/vga_driver.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
@@ -200,11 +256,49 @@ if {[string equal [get_filesets -quiet sim_1] ""]} {
 
 # Set 'sim_1' fileset object
 set obj [get_filesets sim_1]
-# Empty (no sources present)
+set files [list \
+ [file normalize "${origin_dir}/src/testbenches/screen-driver/lcd/lcd_signals_tb.sv"] \
+ [file normalize "${origin_dir}/src/testbenches/screen-driver/vga/vga_signals_tb.sv"] \
+ [file normalize "${origin_dir}/src/testbenches/screen-driver/lcd/lcd_drawer_tb.sv"] \
+ [file normalize "${origin_dir}/src/testbenches/screen-driver/vga/vga_drawer_tb.sv"] \
+ [file normalize "${origin_dir}/src/testbenches/top_tb.sv"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'sim_1' fileset file properties for remote files
+set file "$origin_dir/src/testbenches/screen-driver/lcd/lcd_signals_tb.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/testbenches/screen-driver/vga/vga_signals_tb.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/testbenches/screen-driver/lcd/lcd_drawer_tb.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/testbenches/screen-driver/vga/vga_drawer_tb.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/testbenches/top_tb.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+
+# Set 'sim_1' fileset file properties for local files
+# None
 
 # Set 'sim_1' fileset properties
 set obj [get_filesets sim_1]
-set_property -name "top" -value "top" -objects $obj
+set_property -name "source_set" -value "" -objects $obj
+set_property -name "top" -value "top_tb" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
 
