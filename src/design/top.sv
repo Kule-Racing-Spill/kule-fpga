@@ -21,6 +21,16 @@
 
 
 module top(
-
+    input wire logic pin_FPGA_CS,
+    input wire logic pin_FPGA_CLK,
+    input wire logic pin_FPGA_MISO,
+    output     logic pin_FPGA_MOSI
+    );
+    
+    spi_reader spi_reader(
+        pin_FPGA_CS,
+        pin_FPGA_CLK,
+        pin_FPGA_MOSI,
+        pin_FPGA_MISO
     );
 endmodule
