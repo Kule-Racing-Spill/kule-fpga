@@ -29,6 +29,9 @@ module vga_signals(
     output logic de                 // data enable
     );
     
+    // timings are fetched from https://tomverbeure.github.io/video_timings_calculator
+    // with w = 800, h = 480, refresh = 60Hz
+    
     // horizontal timings
     parameter HA_END = 799;             // last active horizontal pixel
     parameter HS_START = HA_END + 24;   // hsync starts after front porch
