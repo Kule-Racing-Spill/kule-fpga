@@ -163,7 +163,6 @@ set_property -dict { PACKAGE_PIN N7    IOSTANDARD LVCMOS33 } [get_ports { pin_Ne
 set_property -dict { PACKAGE_PIN N8    IOSTANDARD LVCMOS33 } [get_ports { pin_NetNU4CNTDO_0 }];
 # set_property -dict { PACKAGE_PIN N9    IOSTANDARD LVCMOS33 } [get_ports { pin_unconnectedNU4ANIO_L18P_T2_A12_D28_14NPadN9 }];
 # set_property -dict { PACKAGE_PIN N10    IOSTANDARD LVCMOS33 } [get_ports { pin_P33V }];
-set_property -dict { PACKAGE_PIN N11    IOSTANDARD LVCMOS33 } [get_ports { pin_NetNU4ANIO_L13P_T2_MRCC_14 }];
 # set_property -dict { PACKAGE_PIN N12    IOSTANDARD LVCMOS33 } [get_ports { pin_unconnectedNU4ANIO_L13N_T2_MRCC_14NPadN12 }];
 # set_property -dict { PACKAGE_PIN N13    IOSTANDARD LVCMOS33 } [get_ports { pin_unconnectedNU4ANIO_L11P_T1_SRCC_14NPadN13 }];
 # set_property -dict { PACKAGE_PIN N14    IOSTANDARD LVCMOS33 } [get_ports { pin_unconnectedNU4ANIO_L12P_T1_MRCC_14NPadN14 }];
@@ -210,6 +209,10 @@ set_property -dict { PACKAGE_PIN T13    IOSTANDARD LVCMOS33 } [get_ports { pin_N
 set_property -dict { PACKAGE_PIN T14    IOSTANDARD LVCMOS33 } [get_ports { pin_NetNU4ANIO_L10P_T1_D14_14 }];
 set_property -dict { PACKAGE_PIN T15    IOSTANDARD LVCMOS33 } [get_ports { pin_NetNU4ANIO_L10N_T1_D15_14 }];
 # set_property -dict { PACKAGE_PIN T16    IOSTANDARD LVCMOS33 } [get_ports { pin_GND }];
+
+### Clock signal ###
+set_property -dict { PACKAGE_PIN N11    IOSTANDARD LVCMOS33 } [get_ports { clock }];
+create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports { clock }]; 
 
 ### VGA ###
 
