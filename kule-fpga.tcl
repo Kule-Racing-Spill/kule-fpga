@@ -161,13 +161,13 @@ set_property -name "simulator.xsim_version" -value "2023.1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "sim_compile_state" -value "1" -objects $obj
 set_property -name "source_mgmt_mode" -value "DisplayOnly" -objects $obj
-set_property -name "webtalk.activehdl_export_sim" -value "2" -objects $obj
-set_property -name "webtalk.modelsim_export_sim" -value "2" -objects $obj
-set_property -name "webtalk.questa_export_sim" -value "2" -objects $obj
-set_property -name "webtalk.riviera_export_sim" -value "2" -objects $obj
-set_property -name "webtalk.vcs_export_sim" -value "2" -objects $obj
-set_property -name "webtalk.xcelium_export_sim" -value "2" -objects $obj
-set_property -name "webtalk.xsim_export_sim" -value "2" -objects $obj
+set_property -name "webtalk.activehdl_export_sim" -value "3" -objects $obj
+set_property -name "webtalk.modelsim_export_sim" -value "3" -objects $obj
+set_property -name "webtalk.questa_export_sim" -value "3" -objects $obj
+set_property -name "webtalk.riviera_export_sim" -value "3" -objects $obj
+set_property -name "webtalk.vcs_export_sim" -value "3" -objects $obj
+set_property -name "webtalk.xcelium_export_sim" -value "3" -objects $obj
+set_property -name "webtalk.xsim_export_sim" -value "3" -objects $obj
 set_property -name "webtalk.xsim_launch_sim" -value "8" -objects $obj
 set_property -name "xpm_libraries" -value "XPM_CDC" -objects $obj
 

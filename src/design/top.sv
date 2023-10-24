@@ -48,8 +48,8 @@ module top(
     
     // set some initial data in the framebuffers
     initial begin
-        for (i = 0; i < 191999; i = i + 1) ram[i] <= 14;
-        for (n = 192000; i < 383999; n = n + 1) ram[n] <= 0;
+        for (i = 0; i < 191999; i = i + 1) ram[i] <= 4'b1111;
+        for (n = 192000; i < 383999; n = n + 1) ram[n] <= 4'b0000;
     end
     
     // for now, pin reset to low
