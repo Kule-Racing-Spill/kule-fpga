@@ -25,26 +25,22 @@ module vga_color(
     input logic [9:0] sy,
     output logic [14:0] color,
     // RAM
-    input reg [3:0] ram [0:383999]
+    output wire [18:0] addr,
+    input reg [3:0] data
     );
-    // index for colormap
-    logic [3:0] index;
     
     parameter MAX_SX = 799;
     parameter MAX_SY = 479;
     
-    always_ff @(posedge pixel_clk) begin
-        if (sx <= MAX_SX && sy <= MAX_SY) begin
-            // fetch the index
-            index <= ram[sy * 800 + sx];
-        end
-    end
+    // fetch the next color
+    assign addr = (sx <= MAX_SX && sy <= MAX_SY) ? (sy * 800 + sx) : 0;
     
     // fetch the color from the colormap
-    vga_colormap vga_col(index, color);
+    vga_colormap vga_col(pixel_clk, data, color);
 endmodule
 
 module vga_colormap(
+    input wire logic pixel_clk,
     input logic [3:0] index,
     output logic [14:0] color
     );
@@ -62,5 +58,7 @@ module vga_colormap(
     end
     
     // drive the color
-    assign color = colors[index];
+    always_ff @(posedge pixel_clk) begin
+        color <= colors[index];
+    end
 endmodule

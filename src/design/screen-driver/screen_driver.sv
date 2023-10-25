@@ -18,8 +18,11 @@ module screen_driver(
     output logic [7:0] lcd_green,
     output logic [7:0] lcd_blue,
     
-    // RAM
-    input reg [3:0] ram [0:383999]
+    // RAM interface
+    output wire [18:0] addr_vga,
+    input reg [3:0] data_vga,
+    output wire [18:0] addr_lcd,
+    input reg [3:0] data_lcd
     );
     
     // wire for pixel clock, reset and locked from clocking wizard
@@ -47,7 +50,8 @@ module screen_driver(
         vga_red,
         vga_green,
         vga_blue,
-        ram
+        addr_vga,
+        data_vga
     );
     
     // initiate lcd driver
@@ -60,6 +64,7 @@ module screen_driver(
         lcd_red,
         lcd_green,
         lcd_blue,
-        ram
+        addr_lcd,
+        data_lcd
     );
 endmodule

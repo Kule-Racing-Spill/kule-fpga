@@ -9,7 +9,8 @@ module vga_driver(
     output logic [4:0] vga_green,
     output logic [4:0] vga_blue,
     // RAM
-    input reg [3:0] ram [0:383999]
+    output wire [18:0] addr,
+    input reg [3:0] data
     );
     
     // data enable
@@ -25,7 +26,7 @@ module vga_driver(
     vga_signals vga_signals(pixel_clk, rst_pixel, sx, sy, hsync, vsync, de);
     
     // fetch the color on position sx, sy
-    vga_color vga_color(pixel_clk, sx, sy, current_color, ram);
+    vga_color vga_color(pixel_clk, sx, sy, current_color, addr, data);
     
     always_ff @(posedge pixel_clk) begin
         // should we draw?

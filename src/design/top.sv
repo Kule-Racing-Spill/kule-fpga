@@ -38,23 +38,36 @@ module top(
     output logic [7:0] lcd_blue
     );
     
-    // counter variables, TODO: remove
-    integer i = 0;
-    integer n = 0;
-    
-    // bram for framebuffer
-    // TODO: move to separate module
-    reg [3:0] ram [0:383999];
-    
-    // set some initial data in the framebuffers
-    initial begin
-        for (i = 0; i < 191999; i = i + 1) ram[i] <= 4'b1111;
-        for (n = 192000; i < 383999; n = n + 1) ram[n] <= 4'b0000;
-    end
-    
     // for now, pin reset to low
     logic reset = 0;
     
+    // VGA takes the most time to draw active pixels, therefore
+    // the global vsync should follow this
+    wire logic global_vsync;
+    assign global_vsync = vga_vsync;
+    
+    // address and data buses for the screen drivers
+    wire logic [18:0] addr_vga, addr_lcd, addr_wr1, addr_wr2;
+    wire logic [3:0] data_wr1, data_wr2;
+    wire logic wr1_en, wr2_en;
+
+    reg [3:0] data_vga, data_lcd;
+
+    framebuffer_master fb_master(
+        clock,
+        reset,
+        global_vsync,
+        addr_vga,
+        data_vga,
+        addr_lcd,
+        data_lcd,
+        addr_wr1,
+        addr_wr2,
+        data_wr1,
+        data_wr2,
+        wr1_en,
+        wr2_en
+    );
     // initiate screen_driver module
     screen_driver sd(
         clock,
@@ -70,6 +83,9 @@ module top(
         lcd_red,
         lcd_green,
         lcd_blue,
-        ram
+        addr_vga,
+        data_vga,
+        addr_lcd,
+        data_lcd
     );
 endmodule
