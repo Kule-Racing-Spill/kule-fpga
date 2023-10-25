@@ -6,20 +6,20 @@ module framebuffer_master(
     input wire logic vsync,
     
     // READ VGA
-    input [18:0] addr_vga,
+    input wire [18:0] addr_vga,
     output reg [3:0] data_vga,
     
     // READ LCD
-    input [18:0] addr_lcd,
+    input wire [18:0] addr_lcd,
     output reg [3:0] data_lcd,
     
     // write
-    input [18:0] addr_wr1,
-    input [18:0] addr_wr2,
-    input [3:0] data_wr1,
-    input [3:0] data_wr2,
-    input wr1_en,
-    input wr2_en
+    input wire [18:0] addr_wr1,
+    input wire [18:0] addr_wr2,
+    input wire [3:0] data_wr1,
+    input wire [3:0] data_wr2,
+    input wire wr1_en,
+    input wire wr2_en
     );
     
     logic old_vsync;
