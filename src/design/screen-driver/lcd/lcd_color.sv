@@ -1,4 +1,5 @@
 `timescale 1ns/1ps
+`include "params.vh"
 
 module lcd_color(
     input wire logic pixel_clk,
@@ -13,7 +14,8 @@ module lcd_color(
     parameter MAX_SX = 799;
     parameter MAX_SY = 479;
     
-    assign addr = (sx <= MAX_SX && sy <= MAX_SY) ? (sy * 800 + sx) : 0;
+    assign addr = (sx <= MAX_SX && sy <= MAX_SY) ? ((sy * 800 + sx) < FRAMEBUFFER_SIZE ? (sy * 800 + sx) : (sy * 800 + sx) / 2) : 0;
+
     
     // fetch the color
     lcd_colormap(pixel_clk, data, color);

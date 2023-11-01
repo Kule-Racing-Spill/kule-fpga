@@ -1,0 +1,1 @@
+localparam FRAMEBUFFER_SIZE = 192000;

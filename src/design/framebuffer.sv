@@ -1,5 +1,7 @@
 `timescale 1ns/1ps
 
+`include "params.vh"
+
 module framebuffer_master(
     input wire logic clock,
     input wire logic reset,
@@ -19,7 +21,8 @@ module framebuffer_master(
     input wire [3:0] data_wr1,
     input wire [3:0] data_wr2,
     input wire wr1_en,
-    input wire wr2_en
+    input wire wr2_en,
+    input logic bram_en
     );
     
     logic old_vsync;
@@ -38,8 +41,9 @@ module framebuffer_master(
     // temporary storage for output data when framebuffer is write-only
     logic [3:0] fb_data_temp1, fb_data_temp2;
     
+    
     // use vsync to switch buffers
-    always_ff @(posedge clock) begin
+    always_comb begin
         // only flip read_pick at negative edge
         if (old_vsync != vsync && ~vsync) begin
             // switch buffers
@@ -123,7 +127,8 @@ module framebuffer_master(
         fb0_wr2_en,
         fb0_addr2,
         fb0_dataw2,
-        fb0_datar2
+        fb0_datar2,
+        bram_en
     );
 
     // framebuffer 2
@@ -138,7 +143,8 @@ module framebuffer_master(
         fb1_wr2_en,
         fb1_addr2,
         fb1_dataw2,
-        fb1_datar2
+        fb1_datar2,
+        bram_en
     );
 endmodule
 
@@ -146,38 +152,44 @@ endmodule
 module framebuffer(
     input wire logic clock,
     // R/W port 1
-    input logic fb_wr1_en,          // active high. Low means read
-    input logic [18:0] fb_addr_1,   // address bus for R/W port 1
-    input logic [3:0] fb_dataw_1,    // input data to port 1 (if we write)
+    input wire logic fb_wr1_en,          // active high. Low means read
+    input wire logic [18:0] fb_addr_1,   // address bus for R/W port 1
+    input wire logic [3:0] fb_dataw_1,    // input data to port 1 (if we write)
     output logic [3:0] fb_datar_1,   // output data from port 1 (if we read)
     // R/W port 2
-    input logic fb_wr2_en,
-    input logic [18:0] fb_addr_2,
-    input logic [3:0] fb_dataw_2,
-    output logic [3:0] fb_datar_2
+    input wire logic fb_wr2_en,
+    input wire logic [18:0] fb_addr_2,
+    input wire logic [3:0] fb_dataw_2,
+    output logic [3:0] fb_datar_2,
+    input wire logic en
     );
     
     // initialize ram
-    reg [3:0] ram [0:383999];
+    reg [3:0] ram [FRAMEBUFFER_SIZE-1:0];
     integer i, n;
     
+    parameter HALF_FRAMEBUFFER = FRAMEBUFFER_SIZE / 2;
+    
     initial begin
-        for (i = 0; i < 191999; i = i + 1) ram[i] <= 4'b1111;
-        for (n = 192000; i < 383999; n = n + 1) ram[n] <= 4'b0000;
+        for (i = 0; i < HALF_FRAMEBUFFER - 1; i = i + 1) ram[i] <= 4'b0011;
+        for (n = HALF_FRAMEBUFFER; n < FRAMEBUFFER_SIZE - 1; n = n + 1) ram[n] <= 4'b1100;
     end
 
     always @(posedge clock) begin
         // R/W port 1
-        if (fb_wr1_en) begin
-            ram[fb_addr_1] <= fb_dataw_1;
-        end else begin
+        if (en) begin
+            if (fb_wr1_en) begin
+                ram[fb_addr_1] <= fb_dataw_1;
+            end
             fb_datar_1 <= ram[fb_addr_1];
         end
-
-        // R/W port 2
-        if (fb_wr2_en) begin
-            ram[fb_addr_2] <= fb_dataw_2;
-        end else begin
+    end
+    
+    always @(posedge clock) begin
+        if (en) begin
+            if (fb_wr2_en) begin
+                ram[fb_addr_2] <= fb_dataw_2;
+            end
             fb_datar_2 <= ram[fb_addr_2];
         end
     end

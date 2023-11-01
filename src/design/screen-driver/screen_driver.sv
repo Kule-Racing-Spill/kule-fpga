@@ -29,6 +29,7 @@ module screen_driver(
     wire logic pixel_clock;
     logic locked, pixel_reset;
     
+    /*
     // generate pixel clock
     pixel_clock_wiz pix_clock(
         .clk_in(clock),
@@ -36,10 +37,11 @@ module screen_driver(
         .locked(locked),
         .reset(reset)
     );
-    
+    */
+    assign pixel_clock = clock;
     
     // set pixel reset either when clocking wizard is setting up or when reset signal is given
-    assign pixel_reset = reset | locked;
+    assign pixel_reset = reset;
 
     // initiate vga driver
     vga_driver vga_driver(

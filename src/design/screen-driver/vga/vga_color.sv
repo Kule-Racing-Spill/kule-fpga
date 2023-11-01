@@ -1,4 +1,6 @@
 `timescale 1ns / 1ps
+`include "params.vh"
+
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -33,7 +35,8 @@ module vga_color(
     parameter MAX_SY = 479;
     
     // fetch the next color
-    assign addr = (sx <= MAX_SX && sy <= MAX_SY) ? (sy * 800 + sx) : 0;
+    // nasty hack so it supports both a35t and a100t
+    assign addr = (sx <= MAX_SX && sy <= MAX_SY) ? ((sy * 800 + sx) < FRAMEBUFFER_SIZE ? (sy * 800 + sx) : (sy * 800 + sx) / 2) : 0;
     
     // fetch the color from the colormap
     vga_colormap vga_col(pixel_clk, data, color);
@@ -53,7 +56,7 @@ module vga_colormap(
     
     // TODO: set better colors
     initial begin
-        for (i = 0; i < 8; i = i + 1) colors[i] <= 15'b000000000000000 + i;
+        for (i = 0; i < 8; i = i + 1) colors[i] <= 15'b101010101010101 + i;
         for (n = 8; n < 16; n = n + 1) colors[n] <= 15'b111111111111111 - n;
     end
     
