@@ -2,13 +2,12 @@
 `include "params.vh"
 
 module lcd_color(
-    input wire logic pixel_clk,
     input logic [9:0] sx,
     input logic [9:0] sy,
     output logic [23:0] color,
     // RAM
     output wire [18:0] addr,
-    input reg [3:0] data
+    input logic [3:0] data
     );
     
     parameter MAX_SX = 799;
@@ -16,31 +15,29 @@ module lcd_color(
     
     assign addr = (sx <= MAX_SX && sy <= MAX_SY) ? ((sy * 800 + sx) < FRAMEBUFFER_SIZE ? (sy * 800 + sx) : (sy * 800 + sx) / 2) : 0;
 
-    
     // fetch the color
-    lcd_colormap(pixel_clk, data, color);
+    lcd_colormap colormap(data, color);
 endmodule
 
 module lcd_colormap(
-    input wire logic pixel_clk,
     input logic [3:0] index,
     output logic [23:0] color
     );
     // variables for counting
     integer i;
-    integer n;
     
     // color array. Contains 16 24-bit colors
-    reg [23:0] colors [0:15];
+    logic [23:0] colors [0:15];
     
     // TODO: fill with better colors
     initial begin
-        for (i = 0; i < 8; i = i + 1) colors[i] <= 24'h000000 + i;
-        for (n = 8; n < 16; n = n + 1) colors[n] <= 24'hffffff - n;
+        for (i = 2; i < 16; i = i + 1) colors[i] <= 24'h0E7007 + i;
+        colors[0] <= 24'hFFFFFF;
+        colors[1] <= 24'h2374C6;
     end
     
     // drive color specified by index
-    always_ff @(posedge pixel_clk) begin
+    always_comb begin
         color <= colors[index];
     end
 endmodule
