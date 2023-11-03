@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+`include "params.vh"
 
 module framebuffer_tb();
     logic clock = 0, reset = 0, vsync = 1;
