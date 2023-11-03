@@ -1,8 +1,8 @@
 `timescale 1ns/1ps
 
 module screen_driver(
-    input wire logic clock,
-    input wire logic reset,
+    input wire logic pixel_clock,
+    input wire logic pixel_reset,
     // VGA
     output logic vga_hsync,
     output logic vga_vsync,
@@ -20,28 +20,11 @@ module screen_driver(
     
     // RAM interface
     output wire [18:0] addr_vga,
-    input reg [3:0] data_vga,
+    input logic [3:0] data_vga,
     output wire [18:0] addr_lcd,
-    input reg [3:0] data_lcd
+    input logic [3:0] data_lcd
     );
     
-    // wire for pixel clock, reset and locked from clocking wizard
-    wire logic pixel_clock;
-    logic locked, pixel_reset;
-    
-    /*
-    // generate pixel clock
-    pixel_clock_wiz pix_clock(
-        .clk_in(clock),
-        .clk_out(pixel_clock),
-        .locked(locked),
-        .reset(reset)
-    );
-    */
-    assign pixel_clock = clock;
-    
-    // set pixel reset either when clocking wizard is setting up or when reset signal is given
-    assign pixel_reset = reset;
 
     // initiate vga driver
     vga_driver vga_driver(

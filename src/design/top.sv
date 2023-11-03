@@ -1,29 +1,11 @@
 `timescale 1ns / 1ps
 `include "params.vh"
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 10/06/2023 10:50:00 AM
-// Design Name: 
-// Module Name: top
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
-module top(
+
+module top (
     input wire logic clock,
     // todo, add reset signal
-    input wire logic reset_btn,
+    //input wire logic reset_btn,
     // VGA
     output logic vga_hsync,
     output logic vga_vsync,
@@ -39,6 +21,7 @@ module top(
     output logic [7:0] lcd_blue
     );
     
+    
     // for now, pin reset to low
     logic reset = 0;
     
@@ -48,9 +31,12 @@ module top(
     assign global_vsync = vga_vsync;
     
     // address and data buses for the screen drivers
-    wire logic [18:0] addr_vga, addr_lcd, addr_wr1, addr_wr2;
-    wire logic [3:0] data_wr1, data_wr2;
-    wire logic wr1_en, wr2_en;
+    wire logic [18:0] addr_vga, addr_lcd;
+    wire logic [18:0] addr_wr1 = 0, addr_wr2 = 0;
+    wire logic [3:0] data_wr1 = 0, data_wr2 = 0;
+    wire logic wr1_en = 0, wr2_en = 0;
+    
+    // clock and lock signal for clocking wizard
     wire logic clk;
     logic locked;
     
@@ -62,17 +48,16 @@ module top(
         .reset(reset)
     );
     
-    // set pixel reset either when clocking wizard is setting up or when reset signal is given
-    assign rst = reset | locked;
-    
+    // enable bram
     logic bram_en = 1;
     
-
-    reg [3:0] data_vga, data_lcd;
-
+    // color index for vga and lcd
+    logic [3:0] data_vga, data_lcd;
+    
+    // initiate framebuffers
     framebuffer_master fb_master(
         clk,
-        rst,
+        !locked,
         global_vsync,
         addr_vga,
         data_vga,
@@ -90,7 +75,7 @@ module top(
     // initiate screen_driver module
     screen_driver sd(
         clk,
-        rst,
+        !locked,
         vga_hsync,
         vga_vsync,
         vga_red,
