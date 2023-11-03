@@ -1,23 +1,5 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 10/06/2023 10:50:00 AM
-// Design Name: 
-// Module Name: top
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
+
 
 module vga_signals(
     input wire logic pixel_clk,     // pixel clock, see calculations.md for details
@@ -31,7 +13,6 @@ module vga_signals(
     
     // timings are fetched from https://tomverbeure.github.io/video_timings_calculator
     // with w = 800, h = 480, refresh = 60Hz
-    
     // horizontal timings
     parameter HA_END = 799;             // last active horizontal pixel
     parameter HS_START = HA_END + 24;   // hsync starts after front porch
@@ -44,12 +25,14 @@ module vga_signals(
     parameter VS_END = VS_START + 7;    // vsync end after 7 clock cycles
     parameter FRAME = 499;              // last line on frame after back porch
     
+
     // set control signals (hsync, vsync and de)
     always_comb begin
         hsync = ~(sx >= HS_START && sx < HS_END);   // invert since negative polarity
         vsync = ~(sy >= VS_START && sy < VS_END);   // invert since negative polarity
         de = (sx <= HA_END && sy <= VA_END);        // enable data when in active pixels
     end
+    
     
     // decide horizontal and vertical position
     always_ff @(posedge pixel_clk) begin

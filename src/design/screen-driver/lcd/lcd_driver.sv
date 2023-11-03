@@ -11,7 +11,7 @@ module lcd_driver(
     output logic [7:0] lcd_blue,
     // RAM
     output wire [18:0] addr,
-    input reg [3:0] data
+    input logic [3:0] data
     );
     
     // control signals
@@ -36,7 +36,6 @@ module lcd_driver(
     
     // get the color
     lcd_color lcd_color(
-        pixel_clock,
         sx,
         sy,
         color,
