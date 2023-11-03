@@ -1,5 +1,4 @@
 `timescale 1ns/1ps
-
 `include "params.vh"
 
 module framebuffer_master(
@@ -9,11 +8,11 @@ module framebuffer_master(
     
     // READ VGA
     input wire [18:0] addr_vga,
-    output reg [3:0] data_vga,
+    output logic [3:0] data_vga,
     
     // READ LCD
     input wire [18:0] addr_lcd,
-    output reg [3:0] data_lcd,
+    output logic [3:0] data_lcd,
     
     // write
     input wire [18:0] addr_wr1,
@@ -24,7 +23,7 @@ module framebuffer_master(
     input wire wr2_en,
     input logic bram_en
     );
-    
+
     logic old_vsync;
     logic read_pick = 0;
 
@@ -40,15 +39,17 @@ module framebuffer_master(
 
     // temporary storage for output data when framebuffer is write-only
     logic [3:0] fb_data_temp1, fb_data_temp2;
-    
-    
-    // use vsync to switch buffers
-    always_comb begin
+
+    always_ff @(posedge clock) begin
         // only flip read_pick at negative edge
         if (old_vsync != vsync && ~vsync) begin
             // switch buffers
             read_pick <= ~read_pick;
         end
+    end
+
+    // use vsync to switch buffers
+    always_comb begin
         // set old_vsync to current vsync so we dont flip read_pick all the time when vsync is low
         old_vsync <= vsync;
 
@@ -163,16 +164,13 @@ module framebuffer(
     output logic [3:0] fb_datar_2,
     input wire logic en
     );
-    
+
     // initialize ram
-    reg [3:0] ram [FRAMEBUFFER_SIZE-1:0];
-    integer i, n;
-    
-    parameter HALF_FRAMEBUFFER = FRAMEBUFFER_SIZE / 2;
-    
+    logic [3:0] ram [FRAMEBUFFER_SIZE-1:0];
+   
     initial begin
-        for (i = 0; i < HALF_FRAMEBUFFER - 1; i = i + 1) ram[i] <= 4'b0011;
-        for (n = HALF_FRAMEBUFFER; n < FRAMEBUFFER_SIZE - 1; n = n + 1) ram[n] <= 4'b1100;
+        // give it start data
+        $readmemb("fb_data.data", ram);
     end
 
     always @(posedge clock) begin
@@ -184,7 +182,7 @@ module framebuffer(
             fb_datar_1 <= ram[fb_addr_1];
         end
     end
-    
+
     always @(posedge clock) begin
         if (en) begin
             if (fb_wr2_en) begin
@@ -193,5 +191,4 @@ module framebuffer(
             fb_datar_2 <= ram[fb_addr_2];
         end
     end
-
 endmodule
