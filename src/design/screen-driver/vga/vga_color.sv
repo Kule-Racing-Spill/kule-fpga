@@ -16,7 +16,7 @@ module vga_color(
     
     // fetch the next color
     // nasty hack so it supports both a35t and a100t
-    assign addr = (sx <= MAX_SX && sy <= MAX_SY) ? ((sy * 800 + sx) < FRAMEBUFFER_SIZE ? (sy * 800 + sx) : (sy * 800 + sx) / 2) : 0;
+    assign addr = (sx <= MAX_SX && sy <= MAX_SY) ? (FRAMEBUFFER_SIZE > 192000 ? (sy * 800 + sx) : (sy * 800 + sx) / 2) : 0;
     
     // fetch the color from the colormap
     vga_colormap vga_col(data, color);
@@ -35,8 +35,8 @@ module vga_colormap(
     // TODO: set better colors
     initial begin
         for (i = 2; i < 16; i = i + 1) colors[i] <= 15'b101010101010101 + i;
-        colors[0] <= 15'b111111111111111;
-        colors[1] <= 15'b000010001100111;
+        colors[0] <= 15'b000000101001101;
+        colors[1] <= 15'b000110101000010;
     end
     
     // drive the color

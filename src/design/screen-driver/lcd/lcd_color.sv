@@ -13,7 +13,7 @@ module lcd_color(
     parameter MAX_SX = 799;
     parameter MAX_SY = 479;
     
-    assign addr = (sx <= MAX_SX && sy <= MAX_SY) ? ((sy * 800 + sx) < FRAMEBUFFER_SIZE ? (sy * 800 + sx) : (sy * 800 + sx) / 2) : 0;
+    assign addr = (sx <= MAX_SX && sy <= MAX_SY) ? (FRAMEBUFFER_SIZE > 192000 ? (sy * 800 + sx) : (sy * 800 + sx) / 2) : 0;
 
     // fetch the color
     lcd_colormap colormap(data, color);
@@ -32,8 +32,8 @@ module lcd_colormap(
     // TODO: fill with better colors
     initial begin
         for (i = 2; i < 16; i = i + 1) colors[i] <= 24'h0E7007 + i;
-        colors[0] <= 24'hFFFFFF;
-        colors[1] <= 24'h2374C6;
+        colors[0] <= 24'h00AAE4;
+        colors[1] <= 24'h04A443;
     end
     
     // drive color specified by index
