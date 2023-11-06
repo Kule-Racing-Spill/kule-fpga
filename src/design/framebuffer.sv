@@ -1,4 +1,5 @@
 `timescale 1ns/1ps
+`include "params.vh"
 
 module framebuffer_master(
     input wire logic clock,
@@ -6,22 +7,23 @@ module framebuffer_master(
     input wire logic vsync,
     
     // READ VGA
-    input [18:0] addr_vga,
-    output reg [3:0] data_vga,
+    input wire [18:0] addr_vga,
+    output logic [3:0] data_vga,
     
     // READ LCD
-    input [18:0] addr_lcd,
-    output reg [3:0] data_lcd,
+    input wire [18:0] addr_lcd,
+    output logic [3:0] data_lcd,
     
     // write
-    input [18:0] addr_wr1,
-    input [18:0] addr_wr2,
-    input [3:0] data_wr1,
-    input [3:0] data_wr2,
-    input wr1_en,
-    input wr2_en
+    input wire [18:0] addr_wr1,
+    input wire [18:0] addr_wr2,
+    input wire [3:0] data_wr1,
+    input wire [3:0] data_wr2,
+    input wire wr1_en,
+    input wire wr2_en,
+    input logic bram_en
     );
-    
+
     logic old_vsync;
     logic read_pick = 0;
 
@@ -37,14 +39,17 @@ module framebuffer_master(
 
     // temporary storage for output data when framebuffer is write-only
     logic [3:0] fb_data_temp1, fb_data_temp2;
-    
-    // use vsync to switch buffers
+
     always_ff @(posedge clock) begin
         // only flip read_pick at negative edge
         if (old_vsync != vsync && ~vsync) begin
             // switch buffers
             read_pick <= ~read_pick;
         end
+    end
+
+    // use vsync to switch buffers
+    always_comb begin
         // set old_vsync to current vsync so we dont flip read_pick all the time when vsync is low
         old_vsync <= vsync;
 
@@ -123,7 +128,8 @@ module framebuffer_master(
         fb0_wr2_en,
         fb0_addr2,
         fb0_dataw2,
-        fb0_datar2
+        fb0_datar2,
+        bram_en
     );
 
     // framebuffer 2
@@ -138,7 +144,8 @@ module framebuffer_master(
         fb1_wr2_en,
         fb1_addr2,
         fb1_dataw2,
-        fb1_datar2
+        fb1_datar2,
+        bram_en
     );
 endmodule
 
@@ -146,40 +153,42 @@ endmodule
 module framebuffer(
     input wire logic clock,
     // R/W port 1
-    input logic fb_wr1_en,          // active high. Low means read
-    input logic [18:0] fb_addr_1,   // address bus for R/W port 1
-    input logic [3:0] fb_dataw_1,    // input data to port 1 (if we write)
+    input wire logic fb_wr1_en,          // active high. Low means read
+    input wire logic [18:0] fb_addr_1,   // address bus for R/W port 1
+    input wire logic [3:0] fb_dataw_1,    // input data to port 1 (if we write)
     output logic [3:0] fb_datar_1,   // output data from port 1 (if we read)
     // R/W port 2
-    input logic fb_wr2_en,
-    input logic [18:0] fb_addr_2,
-    input logic [3:0] fb_dataw_2,
-    output logic [3:0] fb_datar_2
+    input wire logic fb_wr2_en,
+    input wire logic [18:0] fb_addr_2,
+    input wire logic [3:0] fb_dataw_2,
+    output logic [3:0] fb_datar_2,
+    input wire logic en
     );
-    
+
     // initialize ram
-    reg [3:0] ram [0:383999];
-    integer i, n;
-    
+    logic [3:0] ram [FRAMEBUFFER_SIZE-1:0];
+   
     initial begin
-        for (i = 0; i < 191999; i = i + 1) ram[i] <= 4'b1111;
-        for (n = 192000; i < 383999; n = n + 1) ram[n] <= 4'b0000;
+        // give it start data
+        $readmemb("fb_data.data", ram);
     end
 
     always @(posedge clock) begin
         // R/W port 1
-        if (fb_wr1_en) begin
-            ram[fb_addr_1] <= fb_dataw_1;
-        end else begin
+        if (en) begin
+            if (fb_wr1_en) begin
+                ram[fb_addr_1] <= fb_dataw_1;
+            end
             fb_datar_1 <= ram[fb_addr_1];
-        end
-
-        // R/W port 2
-        if (fb_wr2_en) begin
-            ram[fb_addr_2] <= fb_dataw_2;
-        end else begin
-            fb_datar_2 <= ram[fb_addr_2];
         end
     end
 
+    always @(posedge clock) begin
+        if (en) begin
+            if (fb_wr2_en) begin
+                ram[fb_addr_2] <= fb_dataw_2;
+            end
+            fb_datar_2 <= ram[fb_addr_2];
+        end
+    end
 endmodule
