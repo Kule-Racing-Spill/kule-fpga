@@ -10,3 +10,8 @@ To add new files to git, first create the file in the `src` directory. Then, in 
 ### Target Language
 
 Since Verilog is a bit hard to work with, we use SystemVerilog. It has all the features of Verilog, with some extras. See [this site](https://vlsiverify.com/systemverilog) for some examples and tutorials on SystemVerilog. Also [HDLBits](https://hdlbits.01xz.net/wiki/Main_Page) has some nice tutorials in Verilog.
+
+### Clocking Wizard
+
+IPs are not so friendly with git, so each time you open the project with the tcl script, you have to:
+`Click 'IP Catalogue' -> Search for 'Clocking Wizard' -> Double click the IP -> Change the module name to 'pixel_clock_wiz' -> change input port name to 'clk_in' -> change output clock name to 'clk_out' -> change the output clock to 29.5 MHz -> Click generate`
