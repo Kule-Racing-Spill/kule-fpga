@@ -37,13 +37,13 @@ module top (
     wire logic wr1_en = 0, wr2_en = 0;
     
     // clock and lock signal for clocking wizard
-    wire logic clk;
+    wire logic pixel_clk;
     logic locked;
     
     // generate pixel clock
     pixel_clock_wiz pix_clock(
         .clk_in(clock),
-        .clk_out(clk),
+        .clk_out(pixel_clk),
         .locked(locked),
         .reset(reset)
     );
@@ -56,7 +56,8 @@ module top (
     
     // initiate framebuffers
     framebuffer_master fb_master(
-        clk,
+        pixel_clk,
+        clock,
         !locked,
         global_vsync,
         addr_vga,
@@ -74,7 +75,7 @@ module top (
 
     // initiate screen_driver module
     screen_driver sd(
-        clk,
+        pixel_clk,
         !locked,
         vga_hsync,
         vga_vsync,
