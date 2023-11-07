@@ -24,6 +24,7 @@ module framebuffer_master(
     input wire wr2_en,
     input logic bram_en
     );
+    logic [3:0] count = 0;
 
     logic old_vsync;
     logic read_pick = 0;
@@ -49,14 +50,17 @@ module framebuffer_master(
         // only flip read_pick at negative edge
         if (old_vsync != vsync && ~vsync) begin
             // switch buffers
-            read_pick <= ~read_pick;
+            if (count == 4'hF) begin
+                read_pick <= ~read_pick;
+                count <= 0;
+            end else count <= count + 1;
         end
+        old_vsync <= vsync;
     end
 
     // use vsync to switch buffers
     always_comb begin
         // set old_vsync to current vsync so we dont flip read_pick all the time when vsync is low
-        old_vsync <= vsync;
 
         if (read_pick) begin
             // read from fb1
@@ -134,7 +138,8 @@ module framebuffer_master(
         fb0_addr2,
         fb0_dataw2,
         fb0_datar2,
-        bram_en
+        bram_en,
+        0
     );
 
     // framebuffer 2
@@ -150,7 +155,8 @@ module framebuffer_master(
         fb1_addr2,
         fb1_dataw2,
         fb1_datar2,
-        bram_en
+        bram_en,
+        1
     );
 endmodule
 
@@ -167,7 +173,8 @@ module framebuffer(
     input wire logic [18:0] fb_addr_2,
     input wire logic [3:0] fb_dataw_2,
     output logic [3:0] fb_datar_2,
-    input wire logic en
+    input wire logic en,
+    input logic reversed
     );
 
     // initialize ram
