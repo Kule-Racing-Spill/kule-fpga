@@ -32,9 +32,12 @@ module top (
     
     // address and data buses for the screen drivers
     wire logic [18:0] addr_vga, addr_lcd;
-    wire logic [18:0] addr_wr1 = 0, addr_wr2 = 0;
-    wire logic [3:0] data_wr1 = 0, data_wr2 = 0;
-    wire logic wr1_en = 0, wr2_en = 0;
+    wire logic [18:0] addr_wr1;
+    wire logic [18:0] addr_wr2 = 0;
+    wire logic [3:0] data_wr1;
+    wire logic [3:0] data_wr2 = 0;
+    wire logic wr1_en; 
+    wire logic wr2_en = 0;
     
     // clock and lock signal for clocking wizard
     wire logic pixel_clk;
@@ -57,7 +60,6 @@ module top (
     // initiate framebuffers
     framebuffer_master fb_master(
         pixel_clk,
-        clock,
         !locked,
         global_vsync,
         addr_vga,
@@ -93,4 +95,17 @@ module top (
         addr_lcd,
         data_lcd
     );
+    
+
+    sprite_render sr(
+        pixel_clk,
+        !locked,
+        1,
+        100,
+        100,
+        addr_wr1,
+        data_wr1,
+        wr1_en
+    );
+
 endmodule
