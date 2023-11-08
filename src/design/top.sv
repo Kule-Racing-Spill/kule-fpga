@@ -60,7 +60,6 @@ module top (
     // initiate framebuffers
     framebuffer_master fb_master(
         pixel_clk,
-        pixel_clk,
         !locked,
         global_vsync,
         addr_vga,
@@ -97,7 +96,7 @@ module top (
         data_lcd
     );
     
-    /*
+
     sprite_render sr(
         pixel_clk,
         !locked,
@@ -108,5 +107,5 @@ module top (
         data_wr1,
         wr1_en
     );
-    */
+
 endmodule

@@ -2,8 +2,7 @@
 `include "params.vh"
 
 module framebuffer_master(
-    input wire logic read_clock,
-    input wire logic write_clock,
+    input wire logic clock,
     input wire logic reset,
     input wire logic vsync,
     
@@ -29,8 +28,6 @@ module framebuffer_master(
     logic old_vsync;
     logic read_pick = 0;
 
-    // aliases
-    wire logic fb0_clock, fb1_clock;
     // write signals
     logic fb0_wr1_en, fb0_wr2_en, fb1_wr1_en, fb1_wr2_en;
     // address busses
@@ -42,11 +39,8 @@ module framebuffer_master(
 
     // temporary storage for output data when framebuffer is write-only
     logic [3:0] fb_data_temp1, fb_data_temp2;
-    
-    assign fb0_clock = (!read_pick) ? read_clock : write_clock;
-    assign fb1_clock = (read_pick) ? write_clock : read_clock;
 
-    always_ff @(posedge read_clock) begin
+    always_ff @(posedge clock) begin
         // only flip read_pick at negative edge
         if (old_vsync != vsync && ~vsync) begin
             // switch buffers
@@ -124,39 +118,35 @@ module framebuffer_master(
             fb_data_temp2 <= fb1_datar2;
         end
     end
-
-    // framebuffer 1
-    framebuffer fb0(
-        fb0_clock,
-        // port 1
-        fb0_wr1_en,
-        fb0_addr1,
-        fb0_dataw1,
-        fb0_datar1,
-        // port 2
-        fb0_wr2_en,
-        fb0_addr2,
-        fb0_dataw2,
-        fb0_datar2,
-        bram_en,
-        0
+    
+    framebuffer_bram fb0(
+        // PORT A
+        .addra(fb0_addr1[17:0]),
+        .clka(clock),
+        .dina(fb0_dataw1),
+        .douta(fb0_datar1),
+        .wea(fb0_wr1_en),
+        //PORT B
+        .addrb(fb0_addr2[17:0]),
+        .clkb(clock),
+        .dinb(fb0_dataw2),
+        .doutb(fb0_datar2),
+        .web(fb0_wr2_en)
     );
-
-    // framebuffer 2
-    framebuffer fb1(
-        fb1_clock,
-        // port 1
-        fb1_wr1_en,
-        fb1_addr1,
-        fb1_dataw1,
-        fb1_datar1,
-        // port 2
-        fb1_wr2_en,
-        fb1_addr2,
-        fb1_dataw2,
-        fb1_datar2,
-        bram_en,
-        1
+    
+    framebuffer_bram fb1(
+        // PORT A
+        .addra(fb1_addr1[17:0]),
+        .clka(clock),
+        .dina(fb1_dataw1),
+        .douta(fb1_datar1),
+        .wea(fb1_wr1_en),
+        //PORT B
+        .addrb(fb1_addr2[17:0]),
+        .clkb(clock),
+        .dinb(fb1_dataw2),
+        .doutb(fb1_datar2),
+        .web(fb1_wr2_en)
     );
 endmodule
 
@@ -182,7 +172,8 @@ module framebuffer(
    
     initial begin
         // give it start data
-        $readmemb("fb_data.data", ram);
+        if (reversed) $readmemb("fb_data_rev.data", ram);
+        else $readmemb("fb_data.data", ram);
     end
 
     always @(posedge clock) begin
