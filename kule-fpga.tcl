@@ -33,6 +33,7 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/src/ips/pixel_clock_wiz/pixel_clock_wiz.xci"]"\
  "[file normalize "$origin_dir/src/ips/framebuffer_bram/framebuffer_bram.xci"]"\
  "[file normalize "$origin_dir/src/data/fb_data.coe"]"\
+ "[file normalize "$origin_dir/src/memory_files/sprite.mem"]"\
  "[file normalize "$origin_dir/src/constraints/7a100t.xdc"]"\
   ]
   foreach ifile $files {
@@ -192,6 +193,7 @@ set files [list \
  [file normalize "${origin_dir}/src/ips/pixel_clock_wiz/pixel_clock_wiz.xci"] \
  [file normalize "${origin_dir}/src/ips/framebuffer_bram/framebuffer_bram.xci"] \
  [file normalize "${origin_dir}/src/data/fb_data.coe"] \
+ [file normalize "${origin_dir}/src/memory_files/sprite.mem"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -273,6 +275,11 @@ set_property -name "registered_with_manager" -value "1" -objects $file_obj
 if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
 }
+
+set file "$origin_dir/src/memory_files/sprite.mem"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "Memory File" -objects $file_obj
 
 
 # Set 'sources_1' fileset file properties for local files
