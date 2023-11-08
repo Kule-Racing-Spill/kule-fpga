@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# Vivado v2023.1 (64-bit)
+# SW Build 3865809 on Sun May  7 15:04:56 MDT 2023
+# IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+# SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+# Start of session at: Wed Nov  8 12:23:24 2023
+# Process ID: 787107
+# Current directory: /home/erlendps/Documents/vivado/kule-fpga/src/ips
+# Command line: vivado
+# Log file: /home/erlendps/Documents/vivado/kule-fpga/src/ips/vivado.log
+# Journal file: /home/erlendps/Documents/vivado/kule-fpga/src/ips/vivado.jou
+# Running On: coke, OS: Linux, CPU Frequency: 2113.439 MHz, CPU Physical cores: 4, Host memory: 16384 MB
+#-----------------------------------------------------------
+start_gui
