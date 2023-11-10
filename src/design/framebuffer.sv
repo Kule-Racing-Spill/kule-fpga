@@ -1,6 +1,60 @@
 `timescale 1ns/1ps
 `include "params.vh"
 
+module framebuffer_reset(
+    input wire logic clock,
+    input wire logic reset,
+    input logic enable,
+    output logic finished,
+    // ports
+    output logic [18:0] addr_wr1,
+    output logic [3:0] data_wr1,
+    output logic wr1_en,
+    output logic [18:0] addr_wr2,
+    output logic [3:0] data_wr2,
+    output logic wr2_en
+    );
+    
+    // internal variables
+    logic [$clog2(FRAMEBUFFER_SIZE):0] counter = 0;
+    logic enable_internal = 0;
+    logic finished_internal = 0;
+    
+    always_ff @(posedge clock) begin
+        // if we have a positive edge on the enable signal, reset the counter
+        if (enable_internal != enable && enable) begin
+            counter <= 0;
+        end
+        
+        // set internal enable
+        enable_internal <= enable;
+        
+        // if enabled start counting and check if reset of fb is finished
+        if (enable_internal) begin
+            counter <= counter + 2;
+            if (counter >= FRAMEBUFFER_SIZE - 2) begin
+                finished_internal <= 1;
+            end else finished_internal <= 0;
+        end else finished_internal <= 0;
+        
+        // reset
+        if (reset) begin
+            counter <= 0;
+            finished_internal <= 0;
+        end
+    end
+    
+    always_comb begin
+        wr1_en <= enable;
+        wr2_en <= enable;
+        addr_wr1 <= (FRAMEBUFFER_SIZE > 192000) ? counter : counter / 2;
+        addr_wr2 <= (FRAMEBUFFER_SIZE > 192000) ? counter : (counter + 1) / 2;
+        data_wr1 <= (counter >= FRAMEBUFFER_SIZE / 2) ? 4'b0001 : 4'b0000;
+        data_wr2 <= (counter + 1 >= FRAMEBUFFER_SIZE / 2) ? 4'b0001 : 4'b0000;
+        finished <= finished_internal;
+    end
+endmodule
+
 module framebuffer_master(
     input wire logic clock,
     input wire logic reset,
@@ -21,12 +75,20 @@ module framebuffer_master(
     input wire [3:0] data_wr2,
     input wire wr1_en,
     input wire wr2_en,
-    input logic bram_en
+    
+    // framebuffer reset
+    output logic fb_resetting
     );
-    logic [3:0] count = 0;
 
     logic old_vsync;
     logic read_pick = 0;
+    
+    // reset signals
+    logic fb_reset_finished, fb_reset_enable;
+    // reset busses
+    logic [18:0] fb_reset_addr1, fb_reset_addr2;
+    logic [3:0] fb_reset_data1, fb_reset_data2;
+    logic fb_reset_wr1, fb_reset_wr2;
 
     // write signals
     logic fb0_wr1_en, fb0_wr2_en, fb1_wr1_en, fb1_wr2_en;
@@ -40,22 +102,25 @@ module framebuffer_master(
     // temporary storage for output data when framebuffer is write-only
     logic [3:0] fb_data_temp1, fb_data_temp2;
 
+    // use vsync to switch buffers
     always_ff @(posedge clock) begin
-        // only flip read_pick at negative edge
         if (old_vsync != vsync && ~vsync) begin
             // switch buffers
-            if (count == 4'hF) begin
-                read_pick <= ~read_pick;
-                count <= 0;
-            end else count <= count + 1;
+            read_pick <= ~read_pick;
+            fb_resetting <= 1;
+            fb_reset_enable <= 1;
         end
+        // set old_vsync to current vsync so we dont flip read_pick all the time when vsync is low
         old_vsync <= vsync;
+        
+        if (fb_reset_finished) begin
+            fb_reset_enable <= 0;
+            fb_resetting <= 0;
+        end
     end
 
-    // use vsync to switch buffers
     always_comb begin
-        // set old_vsync to current vsync so we dont flip read_pick all the time when vsync is low
-
+        
         if (read_pick) begin
             // read from fb1
             fb1_wr1_en <= 0;
@@ -72,16 +137,30 @@ module framebuffer_master(
             fb1_dataw2 <= 4'b0000;
 
             // write to fb0
-            fb0_wr1_en <= wr1_en;
-            fb0_wr2_en <= wr2_en;
-
-            // addresses
-            fb0_addr1 <= addr_wr1;
-            fb0_addr2 <= addr_wr2;
-
-            // input data
-            fb0_dataw1 <= data_wr1;
-            fb0_dataw2 <= data_wr2;
+            // check if we are resetting
+            if (fb_reset_enable) begin
+                fb0_wr1_en <= fb_reset_wr1;
+                fb0_wr2_en <= fb_reset_wr2;
+    
+                // addresses
+                fb0_addr1 <= fb_reset_addr1;
+                fb0_addr2 <= fb_reset_addr2;
+    
+                // input data
+                fb0_dataw1 <= fb_reset_data1;
+                fb0_dataw2 <= fb_reset_data2;
+            end else begin
+                fb0_wr1_en <= wr1_en;
+                fb0_wr2_en <= wr2_en;
+    
+                // addresses
+                fb0_addr1 <= addr_wr1;
+                fb0_addr2 <= addr_wr2;
+    
+                // input data
+                fb0_dataw1 <= data_wr1;
+                fb0_dataw2 <= data_wr2;
+            end
 
             // output data
             fb_data_temp1 <= fb0_datar1;
@@ -102,22 +181,49 @@ module framebuffer_master(
             fb0_dataw2 <= 4'b0000;
 
             // write to fb1
-            fb1_wr1_en <= wr1_en;
-            fb1_wr2_en <= wr2_en;
-
-            // addresses
-            fb1_addr1 <= addr_wr1;
-            fb1_addr2 <= addr_wr2;
-
-            // input data
-            fb1_dataw1 <= data_wr1;
-            fb1_dataw2 <= data_wr2;
+            // check if we are resetting
+            if (fb_reset_enable) begin
+                fb1_wr1_en <= fb_reset_wr1;
+                fb1_wr2_en <= fb_reset_wr2;
+    
+                // addresses
+                fb1_addr1 <= fb_reset_addr1;
+                fb1_addr2 <= fb_reset_addr2;
+    
+                // input data
+                fb1_dataw1 <= fb_reset_data1;
+                fb1_dataw2 <= fb_reset_data2;
+            end else begin
+                fb1_wr1_en <= wr1_en;
+                fb1_wr2_en <= wr2_en;
+    
+                // addresses
+                fb1_addr1 <= addr_wr1;
+                fb1_addr2 <= addr_wr2;
+    
+                // input data
+                fb1_dataw1 <= data_wr1;
+                fb1_dataw2 <= data_wr2;
+            end
 
             // output data
             fb_data_temp1 <= fb1_datar1;
             fb_data_temp2 <= fb1_datar2;
         end
     end
+    
+    framebuffer_reset(
+        clock,
+        reset,
+        fb_reset_enable,
+        fb_reset_finished,
+        fb_reset_addr1,
+        fb_reset_data1,
+        fb_reset_wr1,
+        fb_reset_addr2,
+        fb_reset_data2,
+        fb_reset_wr2
+    );
     
     framebuffer_bram fb0(
         // PORT A
@@ -148,50 +254,4 @@ module framebuffer_master(
         .doutb(fb1_datar2),
         .web(fb1_wr2_en)
     );
-endmodule
-
-
-module framebuffer(
-    input wire logic clock,
-    // R/W port 1
-    input wire logic fb_wr1_en,          // active high. Low means read
-    input wire logic [18:0] fb_addr_1,   // address bus for R/W port 1
-    input wire logic [3:0] fb_dataw_1,    // input data to port 1 (if we write)
-    output logic [3:0] fb_datar_1,   // output data from port 1 (if we read)
-    // R/W port 2
-    input wire logic fb_wr2_en,
-    input wire logic [18:0] fb_addr_2,
-    input wire logic [3:0] fb_dataw_2,
-    output logic [3:0] fb_datar_2,
-    input wire logic en,
-    input logic reversed
-    );
-
-    // initialize ram
-    logic [3:0] ram [FRAMEBUFFER_SIZE-1:0];
-   
-    initial begin
-        // give it start data
-        if (reversed) $readmemb("fb_data_rev.data", ram);
-        else $readmemb("fb_data.data", ram);
-    end
-
-    always @(posedge clock) begin
-        // R/W port 1
-        if (en) begin
-            if (fb_wr1_en) begin
-                ram[fb_addr_1] <= fb_dataw_1;
-            end
-            fb_datar_1 <= ram[fb_addr_1];
-        end
-    end
-
-    always @(posedge clock) begin
-        if (en) begin
-            if (fb_wr2_en) begin
-                ram[fb_addr_2] <= fb_dataw_2;
-            end
-            fb_datar_2 <= ram[fb_addr_2];
-        end
-    end
 endmodule

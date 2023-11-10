@@ -33,16 +33,16 @@ module top (
     // address and data buses for the screen drivers
     wire logic [18:0] addr_vga, addr_lcd;
     wire logic [18:0] addr_wr1;
-    wire logic [18:0] addr_wr2 = 0;
+    wire logic [18:0] addr_wr2;
     wire logic [3:0] data_wr1;
-    wire logic [3:0] data_wr2 = 0;
+    wire logic [3:0] data_wr2;
     wire logic wr1_en; 
-    wire logic wr2_en = 0;
+    wire logic wr2_en;
     
     // clock and lock signal for clocking wizard
     wire logic pixel_clk;
     logic locked;
-    
+            
     // generate pixel clock
     pixel_clock_wiz pix_clock(
         .clk_in(clock),
@@ -51,8 +51,8 @@ module top (
         .reset(reset)
     );
     
-    // enable bram
-    logic bram_en = 1;
+    // framebuffer reset
+    logic fb_resetting;
     
     // color index for vga and lcd
     logic [3:0] data_vga, data_lcd;
@@ -72,7 +72,7 @@ module top (
         data_wr2,
         wr1_en,
         wr2_en,
-        bram_en
+        fb_resetting
     );
 
     // initiate screen_driver module
@@ -97,15 +97,16 @@ module top (
     );
     
 
-    sprite_render sr(
+    sprite_driver spr_driver(
         pixel_clk,
         !locked,
-        1,
-        100,
-        100,
         addr_wr1,
         data_wr1,
-        wr1_en
+        wr1_en,
+        addr_wr2,
+        data_wr2,
+        wr2_en,
+        fb_resetting
     );
 
 endmodule
