@@ -21,7 +21,7 @@ wire [7:0] sprite_scale;
 always #5 clk = !clk;
 
 main spi_driver(
-    .sys_clock(clk)
+    .sys_clock(clk),
     .spi_mosi,
     .spi_miso,
     .spi_sck,

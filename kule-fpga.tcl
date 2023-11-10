@@ -41,6 +41,10 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/src/design/spi_driver/spi_reader.sv"]"\
  "[file normalize "$origin_dir/src/design/spi_driver/sprite_cache.sv"]"\
  "[file normalize "$origin_dir/src/constraints/7a100t.xdc"]"\
+ "[file normalize "$origin_dir/src/testbenches/spi_driver/sprite_orchestrator_tb.sv"]"\
+ "[file normalize "$origin_dir/src/testbenches/spi_driver/sprite_storage_tb.sv"]"\
+ "[file normalize "$origin_dir/src/testbenches/spi_driver/spi_reader_tb.sv"]"\
+ "[file normalize "$origin_dir/src/testbenches/spi_driver/spi_driver_tb.sv"]"\
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -360,7 +364,38 @@ if {[string equal [get_filesets -quiet sim_1] ""]} {
 
 # Set 'sim_1' fileset object
 set obj [get_filesets sim_1]
-# Empty (no sources present)
+set files [list \
+ [file normalize "${origin_dir}/src/testbenches/spi_driver/sprite_orchestrator_tb.sv"] \
+ [file normalize "${origin_dir}/src/testbenches/spi_driver/sprite_storage_tb.sv"] \
+ [file normalize "${origin_dir}/src/testbenches/spi_driver/spi_reader_tb.sv"] \
+ [file normalize "${origin_dir}/src/testbenches/spi_driver/spi_driver_tb.sv"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'sim_1' fileset file properties for remote files
+set file "$origin_dir/src/testbenches/spi_driver/sprite_orchestrator_tb.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/testbenches/spi_driver/sprite_storage_tb.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/testbenches/spi_driver/spi_reader_tb.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/testbenches/spi_driver/spi_driver_tb.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+
+# Set 'sim_1' fileset file properties for local files
+# None
 
 # Set 'sim_1' fileset properties
 set obj [get_filesets sim_1]
