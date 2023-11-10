@@ -60,11 +60,45 @@ task send_sprite;
         end
     end
     
+    // end command
     spi_data = 8'b00000000;
     send_byte(spi_data);
 
     #10;
     spi_cs = 1;
+endtask
+
+task send_draw;
+    spi_cs = 0;
+    #10;
+
+    // send command
+    spi_data = 8'b00000000;
+    send_byte(spi_data);
+
+    // sprite id
+    spi_data = 8'b00000010;
+    send_byte(spi_data);
+
+    // position x
+    spi_data = 8'b00000000;
+    send_byte(spi_data);
+    spi_data = 8'b00001000;
+    send_byte(spi_data);
+
+    // position y
+    spi_data = 8'b00010010;
+    send_byte(spi_data);
+    spi_data = 8'b00011010;
+    send_byte(spi_data);
+
+    // scale
+    spi_data = 8'b00000010;
+    send_byte(spi_data);
+
+    // end command
+    spi_data = 8'b00000000;
+    send_byte(spi_data);
 endtask
 
 
@@ -80,7 +114,15 @@ initial begin
     
     send_sprite();
     
-    #1000;
+    #500;
+
+    send_draw();
+
+    #20;
+
+    send_draw();
+
+    #500;
     
     $finish;
 end
