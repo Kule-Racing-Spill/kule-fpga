@@ -27,3 +27,9 @@ src/ips/pixel_clock_wiz/pixel_clock_wiz_stub.v
 src/ips/pixel_clock_wiz/pixel_clock_wiz_stub.vhdl
 src/ips/framebuffer_bram/framebuffer_bram.xml
 src/ips/pixel_clock_wiz/pixel_clock_wiz.xml
+src/ips/framebuffer_bram/doc/blk_mem_gen_v8_4_changelog.txt
+src/ips/framebuffer_bram/misc/blk_mem_gen_v8_4.vhd
+src/ips/framebuffer_bram/sim/framebuffer_bram.v
+src/ips/framebuffer_bram/simulation/blk_mem_gen_v8_4.v
+src/ips/framebuffer_bram/summary.log
+src/ips/pixel_clock_wiz/doc/clk_wiz_v6_0_changelog.txt

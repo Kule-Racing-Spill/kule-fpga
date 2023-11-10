@@ -45,7 +45,6 @@ module spi_driver(
     logic enqueue_en;
     assign enqueue_en = command == 8'b00000001;
     logic [7:0] spi_data;
-    logic dequeue;
     
     logic is_empty;
     logic [7:0] sprite_id;
@@ -54,15 +53,15 @@ module spi_driver(
     logic [7:0] sprite_scale;
     
     sprite_queue draw_queue(
-        spi_data_clock,
-        enqueue_en,
-        enqueue_data,
-        dequeue,
-        is_empty,
-        sprite_id,
-        sprite_x,
-        sprite_y,
-        sprite_scale
+        .clock(spi_data_clock),
+        .enqueue_en,
+        .enqueue_data(spi_data),
+        .dequeue,
+        .is_empty,
+        .sprite_id,
+        .sprite_x,
+        .sprite_y,
+        .sprite_scale
     );     
     
     // SPI reader module

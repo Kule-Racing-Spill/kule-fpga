@@ -93,12 +93,12 @@ module spi_command_parser (
             command <= data;
             data_index <= 0;
             case(data)
-                8'b00000000: begin
+                COMMAND_SAVE_SPRITE: begin
                     // send sprite command
                     // 1(spriteid) + 512(pixel values) bytes of data
                     data_count <= 513;
                 end
-                8'b00000001: begin
+                COMMAND_DRAW_SPRITE: begin
                     // draw sprite command
                     data_count <= 6;
                 end
@@ -110,7 +110,7 @@ module spi_command_parser (
             endcase
         end else begin
             case(command)
-                8'b00000000: begin
+                COMMAND_SAVE_SPRITE: begin
                     // parse "send sprite" command
                     if (data_index == 0) begin
                         sprite_select <= data;

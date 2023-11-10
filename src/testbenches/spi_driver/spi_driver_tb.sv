@@ -1,6 +1,5 @@
 `timescale 1ns / 1ps
 
-
 module spi_driver_tb();
 
 reg clk;
@@ -20,7 +19,7 @@ wire [7:0] sprite_scale;
 
 always #5 clk = !clk;
 
-main spi_driver(
+spi_driver spi_driver(
     .sys_clock(clk),
     .spi_mosi,
     .spi_miso,
@@ -33,7 +32,7 @@ main spi_driver(
     .is_empty,
     .sprite_id,
     .sprite_x,
-    .sprity_y,
+    .sprite_y,
     .sprite_scale
 );
 
@@ -58,7 +57,7 @@ task send_sprite;
     spi_cs = 0;
     #10;
     // send command
-    spi_data = 8'b00000000;
+    spi_data = 8'b00000010;
     send_byte(spi_data);
     // send sprite id
     spi_data = 8'b00000010;
@@ -80,37 +79,45 @@ task send_sprite;
     spi_cs = 1;
 endtask
 
-task send_draw;
+task send_draw (
+    input [7:0] sprite_id,
+    input [15:0] x,
+    input [15:0] y,
+    input [7:0] scale
+);
     spi_cs = 0;
     #10;
 
     // send command
-    spi_data = 8'b00000000;
+    spi_data = 8'b00000001;
     send_byte(spi_data);
 
     // sprite id
-    spi_data = 8'b00000010;
+    spi_data = sprite_id;
     send_byte(spi_data);
 
     // position x
-    spi_data = 8'b00000000;
+    spi_data = x[15:8];
     send_byte(spi_data);
-    spi_data = 8'b00001000;
+    spi_data = x[7:0];
     send_byte(spi_data);
 
     // position y
-    spi_data = 8'b00010010;
+    spi_data = y[15:8];
     send_byte(spi_data);
-    spi_data = 8'b00011010;
+    spi_data = y[7:0];
     send_byte(spi_data);
 
     // scale
-    spi_data = 8'b00000010;
+    spi_data = scale;
     send_byte(spi_data);
 
     // end command
     spi_data = 8'b00000000;
     send_byte(spi_data);
+    
+    #10;
+    spi_cs = 1;
 endtask
 
 
@@ -126,13 +133,28 @@ initial begin
     
     #500;
 
-    send_draw();
+    send_draw(
+        8'b00000001,
+        16'b0000000100000001,
+        16'b0000000100000001,
+        8'b00000010
+    );
 
     #20;
 
-    send_draw();
+    send_draw(
+        8'b00000010,
+        16'b0000001100000011,
+        16'b0000000100001001,
+        8'b00000000
+    );
 
-    #500;
+    #200;
+
+    dequeue = 1;
+    #20;
+    dequeue = 0;
+    #400;
     
     $finish;
 end
