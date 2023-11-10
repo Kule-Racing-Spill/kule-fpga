@@ -37,8 +37,8 @@ module vga_colormap(
         for (i = 4; i < 16; i = i + 1) colors[i] <= 15'b101010101010101 + i;
         colors[0] <= 15'b000000101001101;
         colors[1] <= 15'b000110101000010;
-        colors[2] <= 15'b011000100001000;
-        colors[3] <= 15'b010000100001100;
+        colors[2] <= 15'b011010000001000;
+        colors[3] <= 15'b011110110100000;
     end
     
     // drive the color
