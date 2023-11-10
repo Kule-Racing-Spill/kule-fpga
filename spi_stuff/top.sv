@@ -8,21 +8,8 @@ module main(
     input spi_miso,
     input spi_sck,
     input spi_cs,
-    output [3:0]led,
-    output led0_b,
-    output led0_r,
-    output led0_g,
     input sys_clock
     );
-    reg [3:0] reg_led = 0;
-    reg reg_r = 0;
-    reg reg_g = 0;
-    reg reg_b = 0;
-    
-    assign led[3:0] = command[3:0];
-    assign led0_r = reg_r;
-    assign led0_g = reg_g;
-    assign led0_b = reg_b;
 
     // Buffer SPI clock
     BUFG bufg_inst (
@@ -90,29 +77,4 @@ module main(
         sprite_w_addr,
         sprite_w_data
     );
-
-    always @(posedge sys_clock) begin
-        reg_led <= 0;
-        if (command == 8'b00000000) begin
-            reg_r <= 1;
-        end
-        else
-            reg_r <= 0;
-        
-        if (command == 8'b00000001) begin
-            reg_g <= 1;
-        end
-        else begin
-            reg_g <= 0;
-        end
-        
-        if (command == 8'b00000010) begin
-            reg_b <= 1;
-        end
-        else begin
-            reg_b <= 0;
-        end
-        
-    end
-
 endmodule
