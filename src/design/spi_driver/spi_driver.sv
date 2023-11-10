@@ -1,18 +1,18 @@
 module spi_driver(
-    input wire sys_clock                // FPGA clock
+    input wire sys_clock,               // FPGA clock
     input wire spi_mosi,                // SPI: Master out / slave in
     input wire spi_miso,                // SPI: Master in / slave out (currently unused)
     input wire spi_sck,                 // SPI: clock
     input wire spi_cs,                  // SPI: chip select
-    input wire sprite_r_en;             // Sprite storage: read enable
-    input wire [SPRITE_ADDR_SIZE:0] sprite_r_addr; // Sprite storage: Address to read from
-    output logic [3:0] sprite_r_data;   // Sprite storage: The read data
-    input wire dequeue;                 // Sprite write queue: dequeue (removes the first element at posedge)
-    output logic is_empty;              // Sprite write queue: Is sprite queue empty?
-    output logic [7:0] sprite_id;       // Sprite write queue: First sprite id
-    output logic [15:0] sprite_x;       // Sprite write queue: First sprite x position
-    output logic [15:0] sprite_y;       // Sprite write queue: First sprite y position
-    output logic [7:0] sprite_scale;    // Sprite write queue: First sprite scale
+    input wire sprite_r_en,             // Sprite storage: read enable
+    input wire [SPRITE_ADDR_SIZE:0] sprite_r_addr, // Sprite storage: Address to read from
+    output logic [3:0] sprite_r_data,   // Sprite storage: The read data
+    input wire dequeue,                 // Sprite write queue: dequeue (removes the first element at posedge)
+    output logic is_empty,              // Sprite write queue: Is sprite queue empty?
+    output logic [7:0] sprite_id,       // Sprite write queue: First sprite id
+    output logic [15:0] sprite_x,       // Sprite write queue: First sprite x position
+    output logic [15:0] sprite_y,       // Sprite write queue: First sprite y position
+    output logic [7:0] sprite_scale     // Sprite write queue: First sprite scale
 );
     // Buffer SPI clock
     BUFG bufg_inst (
