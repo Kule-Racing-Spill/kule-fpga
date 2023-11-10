@@ -1,28 +1,40 @@
 `timescale 1ns / 1ps
 
 
-module top_tb();
+module spi_driver_tb();
 
 reg clk;
-reg [3:0]sw;
-reg [3:0]btn;
 reg spi_mosi;
 wire spi_miso;
 reg spi_sck;
 reg spi_cs;
-wire [3:0] led;
+reg sprite_r_en;
+reg [SPRITE_ADDR_SIZE:0] sprite_r_addr;
+wire [3:0] sprite_r_data;
+reg dequeue;
+wire is_empty;
+wire [7:0] sprite_id;
+wire [15:0] sprite_x;
+wire [15:0] sprite_y;
+wire [7:0] sprite_scale;
 
 always #5 clk = !clk;
 
-main top(
-    .sw,
-    .btn,
+main spi_driver(
+    .sys_clock(clk)
     .spi_mosi,
     .spi_miso,
     .spi_sck,
     .spi_cs,
-    .led,
-    .sys_clock(clk)
+    .sprite_r_en,
+    .sprite_r_addr,
+    .sprite_r_data,
+    .dequeue,
+    .is_empty,
+    .sprite_id,
+    .sprite_x,
+    .sprity_y,
+    .sprite_scale
 );
 
 task send_byte;
@@ -104,8 +116,6 @@ endtask
 
 initial begin
     clk = 0;
-    sw = 0;
-    btn = 0;
     spi_mosi = 0;
     spi_sck = 1;
     spi_cs = 1;
