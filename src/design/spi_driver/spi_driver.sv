@@ -1,8 +1,8 @@
 module spi_driver(
-    input wire sys_clock,               // FPGA clock
+    input wire clock,                   // FPGA clock
     input wire spi_mosi,                // SPI: Master out / slave in
     input wire spi_miso,                // SPI: Master in / slave out (currently unused)
-    input wire spi_sck,                 // SPI: clock
+    input wire spi_clk,                 // SPI: clock
     input wire spi_cs,                  // SPI: chip select
     input wire sprite_r_en,             // Sprite storage: read enable
     input wire [SPRITE_ADDR_SIZE:0] sprite_r_addr, // Sprite storage: Address to read from
@@ -16,7 +16,7 @@ module spi_driver(
 );
     // Buffer SPI clock
     BUFG bufg_inst (
-        .I(spi_sck),   // Input clock
+        .I(spi_clk),   // Input clock
         .O(spi_clk_bufg)   // Buffered clock
     );
     
@@ -30,7 +30,7 @@ module spi_driver(
     logic [3:0] sprite_r_data;  
     
     sprite_storage storage (
-        sys_clock,
+        clock,
         sprite_select,
         sprite_w_en,
         sprite_w_addr,
@@ -67,7 +67,7 @@ module spi_driver(
     // SPI reader module
     logic[7:0] command;
     spi_reader reader(
-        sys_clock,
+        clock,
         spi_cs,
         spi_clk_bufg,
         spi_mosi,

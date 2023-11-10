@@ -18,9 +18,43 @@ module top (
     output logic lcd_vsync,
     output logic [7:0] lcd_red,
     output logic [7:0] lcd_green,
-    output logic [7:0] lcd_blue
+    output logic [7:0] lcd_blue,
+    // SPI
+    input logic spi_cs,
+    input logic spi_clk,
+    input logic spi_mosi,
+    input logic spi_miso
+);
+    // Sprite memory interface
+    logic sprite_r_en;
+    logic [SPRITE_ADDR_SIZE:0] sprite_r_addr;
+    logic [3:0] sprite_r_data;
+
+    // Sprite draw queue interface
+    logic sprite_queue_dequeue;
+    logic sprite_queue_is_empty;
+    logic [7:0] sprite_queue_sprite_id;
+    logic [15:0] sprite_queue_sprite_x;
+    logic [15:0] sprite_queue_sprite_y;
+    logic [7:0] sprite_queue_sprite_scale;
+
+    // SPI reader module
+    spi_driver spi(
+        .clock,
+        .spi_mosi,
+        .spi_miso,
+        .spi_clk,
+        .spi_cs,
+        .sprite_r_en,
+        .sprite_r_addr,
+        .sprite_r_data,
+        .dequeue(sprite_queue_dequeue),
+        .is_empty(sprite_queue_is_empty),
+        .sprite_id(sprite_queue_sprite_id),
+        .sprite_x(sprite_queue_sprite_x),
+        .sprite_y(sprite_queue_sprite_y),
+        .sprite_scale(sprite_queue_sprite_scale)
     );
-    
     
     // for now, pin reset to low
     logic reset = 0;
