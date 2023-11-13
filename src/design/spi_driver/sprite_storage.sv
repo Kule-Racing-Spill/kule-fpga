@@ -22,15 +22,32 @@ module sprite_storage(
     logic sb_r0_en[SPRITE_NUM-1:0];
     logic sb_r1_en[SPRITE_NUM-1:0];
     
-    spritebuffer sb[SPRITE_NUM-1:0] (
+    // TEMPORARY FOR TESTING
+    spritebuffer sb[1:0] #(
+        .INIT_F("sprite.mem")
+    )(
         .clock(clock),
-        .sb_w_en(sb_w_en),
+        .sb_w_en(sb_w_en[1:0]),
         .sb_w_addr(w_addr),
         .sb_w_data(w_data),
-        .sb_r0_en(sb_r0_en),
+        .sb_r0_en(sb_r0_en[1:0]),
         .sb_r0_addr(r0_addr),
         .sb_r0_data(r0_data),
-        .sb_r1_en(sb_r1_en),
+        .sb_r1_en(sb_r1_en[1:0]),
+        .sb_r1_addr(r1_addr),
+        .sb_r1_data(r1_data)
+    );
+    spritebuffer sb[1:0] #(
+        .INIT_F("sad_sprite.mem")
+    )(
+        .clock(clock),
+        .sb_w_en(sb_w_en[3:2]),
+        .sb_w_addr(w_addr),
+        .sb_w_data(w_data),
+        .sb_r0_en(sb_r0_en[3:2]),
+        .sb_r0_addr(r0_addr),
+        .sb_r0_data(r0_data),
+        .sb_r1_en(sb_r1_en[3:2]),
         .sb_r1_addr(r1_addr),
         .sb_r1_data(r1_data)
     );
@@ -43,7 +60,9 @@ module sprite_storage(
     end
 endmodule
 
-module spritebuffer(
+module spritebuffer #(
+    parameter INIT_F="sprite.mem"
+)(
     input logic clock,
     // Write port (full byte from SPI)
     input logic sb_w_en,          // active high
@@ -64,7 +83,7 @@ module spritebuffer(
    
     initial begin
         // give it start data
-        $readmemb("sprite.mem", ram);
+        $readmemb(INIT_F, ram);
     end
 
     always @(posedge clock) begin
