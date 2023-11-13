@@ -23,7 +23,8 @@ module sprite_driver(
     input logic [7:0] sprite_queue_sprite_id,
     input logic [15:0] sprite_queue_sprite_x,
     input logic [15:0] sprite_queue_sprite_y,
-    input logic [7:0] sprite_queue_sprite_scale
+    input logic [7:0] sprite_queue_sprite_scale,
+    input logic [2:0] sw
     );
 
     assign sprite_r_en = 1;
@@ -57,6 +58,7 @@ module sprite_driver(
         sr0_en,
         spr1x,
         sprite_queue_sprite_y,
+        sw,//sprite_queue_sprite_scale,
         sprite_r_addr,
         sprite_r_data,
         sr0_addr,

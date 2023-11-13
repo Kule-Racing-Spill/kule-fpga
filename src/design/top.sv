@@ -23,7 +23,8 @@ module top (
     input logic spi_cs,
     input logic spi_clk,
     input logic spi_mosi,
-    output logic spi_miso
+    output logic spi_miso,
+    input logic [2:0] sw
 );
     // Sprite memory interface
     logic sprite_r_en;
@@ -149,7 +150,8 @@ module top (
         sprite_queue_sprite_id,
         sprite_queue_sprite_x,
         sprite_queue_sprite_y,
-        sprite_queue_sprite_scale
+        sprite_queue_sprite_scale,
+        sw
     );
 
 endmodule

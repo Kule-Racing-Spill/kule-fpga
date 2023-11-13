@@ -47,8 +47,8 @@ module framebuffer_reset(
     always_comb begin
         wr1_en <= enable;
         wr2_en <= enable;
-        addr_wr1 <= (FRAMEBUFFER_SIZE > 192000) ? counter : counter / 2;
-        addr_wr2 <= (FRAMEBUFFER_SIZE > 192000) ? counter : (counter + 1) / 2;
+        addr_wr1 <= counter;//(FRAMEBUFFER_SIZE > 192000) ? counter : counter / 2;
+        addr_wr2 <= counter + 1;//(FRAMEBUFFER_SIZE > 192000) ? counter : (counter + 1) / 2;
         data_wr1 <= (counter >= FRAMEBUFFER_SIZE / 2) ? 4'b0001 : 4'b0000;
         data_wr2 <= (counter + 1 >= FRAMEBUFFER_SIZE / 2) ? 4'b0001 : 4'b0000;
         finished <= finished_internal;
