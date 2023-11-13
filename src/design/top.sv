@@ -27,9 +27,13 @@ module top (
     input logic [2:0] sw
 );
     // Sprite memory interface
-    logic sprite_r_en;
-    logic [SPRITE_ADDR_SIZE:0] sprite_r_addr;
-    logic [3:0] sprite_r_data;
+    logic [$clog2(SPRITE_NUM)-1:0] sprite_r0_select;
+    logic [SPRITE_ADDR_SIZE:0] sprite_r0_addr;
+    logic [3:0] sprite_r0_data;
+
+    logic [$clog2(SPRITE_NUM)-1:0] sprite_r1_select;
+    logic [SPRITE_ADDR_SIZE:0] sprite_r1_addr;
+    logic [3:0] sprite_r1_data;
 
     // Sprite draw queue interface
     logic sprite_queue_dequeue;
@@ -46,9 +50,12 @@ module top (
         .spi_miso,
         .spi_clk,
         .spi_cs,
-        .sprite_r_en,
-        .sprite_r_addr,
-        .sprite_r_data,
+        .sprite_r0_select,
+        .sprite_r0_addr,
+        .sprite_r0_data,
+        .sprite_r1_select,
+        .sprite_r1_addr,
+        .sprite_r1_data,
         .dequeue(sprite_queue_dequeue),
         .is_empty(sprite_queue_is_empty),
         .sprite_id(sprite_queue_sprite_id),
@@ -133,25 +140,27 @@ module top (
     
 
     sprite_driver spr_driver(
-        pixel_clk,
-        !locked,
-        addr_wr1,
-        data_wr1,
-        wr1_en,
-        addr_wr2,
-        data_wr2,
-        wr2_en,
-        fb_resetting,
-        sprite_r_en,
-        sprite_r_addr,
-        sprite_r_data,
-        sprite_queue_dequeue,
-        sprite_queue_is_empty,
-        sprite_queue_sprite_id,
-        sprite_queue_sprite_x,
-        sprite_queue_sprite_y,
-        sprite_queue_sprite_scale,
-        sw
+        .clock(pixel_clk),
+        .reset(!locked),
+        .wr1_addr(addr_wr1),
+        .wr1_data(data_wr1),
+        .wr1_en,
+        .wr2_addr(addr_wr2),
+        .wr2_data(data_wr2),
+        .wr2_en,
+        .fb_resetting,
+        .sprite_r0_select,
+        .sprite_r0_addr,
+        .sprite_r0_data,
+        .sprite_r1_select,
+        .sprite_r1_addr,
+        .sprite_r1_data,
+        .sprite_queue_dequeue,
+        .sprite_queue_is_empty,
+        .sprite_queue_sprite_id,
+        .sprite_queue_sprite_x,
+        .sprite_queue_sprite_y,
+        .sprite_queue_sprite_scale
     );
 
 endmodule

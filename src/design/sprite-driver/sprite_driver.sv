@@ -14,36 +14,56 @@ module sprite_driver(
     output wire logic wr2_en,
     input logic fb_resetting,
     // sprite memory
-    output logic sprite_r_en,
-    output logic [SPRITE_ADDR_SIZE:0] sprite_r_addr,
-    input logic [3:0] sprite_r_data,
+    output logic [$clog2(SPRITE_NUM)-1:0] sprite_r0_select,
+    output logic [SPRITE_ADDR_SIZE:0] sprite_r0_addr,
+    input logic [3:0] sprite_r0_data,
+    output logic [$clog2(SPRITE_NUM)-1:0] sprite_r1_select,
+    output logic [SPRITE_ADDR_SIZE:0] sprite_r1_addr,
+    input logic [3:0] sprite_r1_data,
     // Sprite draw queue
     output logic sprite_queue_dequeue,
     input logic sprite_queue_is_empty,
     input logic [7:0] sprite_queue_sprite_id,
-    input logic [15:0] sprite_queue_sprite_x,
-    input logic [15:0] sprite_queue_sprite_y,
-    input logic [7:0] sprite_queue_sprite_scale,
-    input logic [2:0] sw
+    input logic [15:0] sprite_queue_sprite_x, sprite_queue_sprite_y,
+    input logic [7:0] sprite_queue_sprite_scale
     );
-
-    assign sprite_r_en = 1;
-    assign sprite_queue_dequeue = 0;
     
     wire logic [18:0] sr0_addr, sr1_addr;
-    wire logic sr0_drawing, sr1_drawing;
-    wire logic sr0_en, sr1_en;
     logic [3:0] sr0_data, sr1_data;
+    wire logic sprite0_drawing, sprite1_drawing;
+    wire logic sprite0_en, sprite1_en;
+    logic [15:0] sprite0_x, sprite0_y, sprite1_x, sprite1_y;
+    logic [7:0] sprite0_scale, sprite1_scale;
     
     assign wr1_addr = sr0_addr;
     assign wr1_data = sr0_data;
-    assign wr1_en = sr0_drawing;
-    assign sr0_en = 1;
+    assign wr1_en = sprite0_drawing;
     
     assign wr2_addr = sr1_addr;
     assign wr2_data = sr1_data;
-    assign wr2_en = sr1_drawing;
-    assign sr1_en = 1;
+    assign wr2_en = sprite1_drawing;
+
+    sprite_distributor sd(
+        .clock,
+        .sprite_queue_dequeue,
+        .sprite_queue_is_empty,
+        .sprite_queue_sprite_id,
+        .sprite_queue_sprite_x,
+        .sprite_queue_sprite_y,
+        .sprite_queue_sprite_scale,
+        .sprite0_en,
+        .sprite0_id(sprite_r0_select),
+        .sprite0_x,
+        .sprite0_y,
+        .sprite0_scale,
+        .sprite0_drawing,
+        .sprite1_en,
+        .sprite1_id(sprite_r1_select),
+        .sprite1_x,
+        .sprite1_y,
+        .sprite1_scale,
+        .sprite1_drawing,
+    );
     
     logic [9:0] spr1x = 0, spr2x = 100;
     
@@ -53,29 +73,83 @@ module sprite_driver(
     end
     
     sprite_render sr0(
-        clock,
-        reset || fb_resetting,
-        sr0_en,
-        spr1x,
-        sprite_queue_sprite_y,
-        sw,//sprite_queue_sprite_scale,
-        sprite_r_addr,
-        sprite_r_data,
-        sr0_addr,
-        sr0_data,
-        sr0_drawing
+        .clk(clock),
+        .rst(reset || fb_resetting),
+        .enable(sprite0_en),
+        .sx(sprite0_x),
+        .sy(sprite0_y),
+        .sprite_scale(sprite0_scale)
+        .sprite_r_addr(sprite_r0_addr),
+        .sprite_r_data(sprite_r0_data),
+        .addr(sr0_addr),
+        .pix(sr0_data),
+        .drawing(sr0_drawing)
     );
     
-    /*
     sprite_render sr1(
-        clock,
-        reset || fb_resetting,
-        sr1_en,
-        spr2x,
-        100,
-        sr1_addr,
-        sr1_data,
-        sr1_drawing
+        .clk(clock),
+        .rst(reset || fb_resetting),
+        .enable(sprite1_en),
+        .sx(sprite1_x),
+        .sy(sprite1_y),
+        .sprite_scale(sprite1_scale)
+        .sprite_r_addr(sprite_r1_addr),
+        .sprite_r_data(sprite_r1_data),
+        .addr(sr1_addr),
+        .pix(sr1_data),
+        .drawing(sr1_drawing)
     );
-    */
+endmodule
+
+module sprite_distributor (
+    input logic clock,
+    // main sprite queue interface
+    output logic sprite_queue_dequeue,
+    input logic sprite_queue_is_empty,
+    input logic [7:0] sprite_queue_sprite_id,
+    input logic [15:0] sprite_queue_sprite_x, sprite_queue_sprite_y,
+    input logic [7:0] sprite_queue_sprite_scale
+    // sprite render 0
+    output logic sprite0_en,
+    output logic [7:0] sprite0_id,
+    output logic [15:0] sprite0_x, sprite0_y,
+    output logic [7:0] sprite0_scale,
+    input logic sprite0_drawing,
+    // sprite render 1
+    output logic sprite1_en,
+    output logic [7:0] sprite1_id,
+    output logic [15:0] sprite1_x, sprite1_y,
+    output logic [7:0] sprite1_scale,
+    input logic sprite1_drawing
+);
+    always_ff @(posedge clock) begin
+        if (sprite_queue_dequeue) begin
+            sprite_queue_dequeue <= 0;
+        end
+
+        if(sprite0_en && !sprite0_drawing) begin
+            sprite0_en <= 0;
+        end
+        if(sprite1_en && !sprite1_drawing) begin
+            sprite1_en <= 0;
+        end
+
+        if (!sprite_queue_is_empty && !sprite_queue_dequeue) begin
+            if (!sprite0_en) begin
+                sprite0_en <= 1;
+                sprite0_id <= sprite_queue_sprite_id;
+                sprite0_x <= sprite_queue_sprite_x;
+                sprite0_y <= sprite_queue_sprite_y;
+                sprite0_scale <= sprite_queue_sprite_scale;
+                sprite_queue_dequeue <= 1;
+            end else if (!sprite1_en) begin
+                sprite1_en <= 1;
+                sprite1_id <= sprite_queue_sprite_id;
+                sprite1_x <= sprite_queue_sprite_x;
+                sprite1_y <= sprite_queue_sprite_y;
+                sprite1_scale <= sprite_queue_sprite_scale;
+                sprite_queue_dequeue <= 1;
+            end
+        end
+    end
 endmodule
