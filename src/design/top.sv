@@ -23,7 +23,7 @@ module top (
     input logic spi_cs,
     input logic spi_clk,
     input logic spi_mosi,
-    input logic spi_miso
+    output logic spi_miso
 );
     // Sprite memory interface
     logic sprite_r_en;

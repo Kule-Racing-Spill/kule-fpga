@@ -3,8 +3,8 @@
 
 module sprite_render #(
         parameter CORDW = 10,
-        parameter SPR_WIDTH = 8,
-        parameter SPR_HEIGHT = 8,
+        parameter SPR_WIDTH = 16,
+        parameter SPR_HEIGHT = 16,
         parameter SPR_DATAW = 4
     )(
     input  wire logic clk,                            // clock

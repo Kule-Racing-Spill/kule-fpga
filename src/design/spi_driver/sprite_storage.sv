@@ -59,7 +59,7 @@ module spritebuffer(
    
     initial begin
         // give it start data
-        // $readmemb("fb_data.data", ram);
+        $readmemb("sprite.mem", ram);
     end
 
     always @(posedge clock) begin

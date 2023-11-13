@@ -21,6 +21,8 @@ module sprite_queue(
     logic [$clog2(QUEUE_SIZE)-1:0] queue_size = 1;
     logic [2:0] read_index = 0;
     
+    logic old_dequeue;
+    
     initial begin
         sprite_id_queue[0] = 8'b00000001;
         sprite_x_queue[0] = 200;
@@ -28,7 +30,7 @@ module sprite_queue(
         sprite_scale_queue[0] = 8'b00000000;
     end
 
-    assign is_empty = queue_size == 0;
+    assign is_empty = (queue_size == 0) ? 1 : 0;
     assign sprite_id = sprite_id_queue[0];
     assign sprite_x = sprite_x_queue[0];
     assign sprite_y = sprite_y_queue[0];
@@ -56,15 +58,16 @@ module sprite_queue(
         end else begin
             read_index <= 0;
         end
-    end
-    
-    always @(posedge dequeue) begin
-        if (!is_empty) begin
-            queue_size <= queue_size - 1;
-            sprite_id_queue <= { 8'b00000000, sprite_id_queue[QUEUE_SIZE-1:1] };
-            sprite_x_queue <= { 8'b00000000, sprite_x_queue[QUEUE_SIZE-1:1] };
-            sprite_y_queue <= { 8'b00000000, sprite_y_queue[QUEUE_SIZE-1:1] };
-            sprite_scale_queue <= { 8'b00000000, sprite_scale_queue[QUEUE_SIZE-1:1] };
+        
+        if (dequeue != old_dequeue && dequeue) begin
+            if (!is_empty) begin
+                queue_size <= queue_size - 1;
+                sprite_id_queue <= { 8'b00000000, sprite_id_queue[QUEUE_SIZE-1:1] };
+                sprite_x_queue <= { 8'b00000000, sprite_x_queue[QUEUE_SIZE-1:1] };
+                sprite_y_queue <= { 8'b00000000, sprite_y_queue[QUEUE_SIZE-1:1] };
+                sprite_scale_queue <= { 8'b00000000, sprite_scale_queue[QUEUE_SIZE-1:1] };
+            end
         end
+        old_dequeue <= dequeue;
     end
 endmodule

@@ -25,9 +25,6 @@ module spi_driver(
     logic sprite_w_en;
     logic [SPRITE_ADDR_SIZE:0] sprite_w_addr;
     logic [7:0] sprite_w_data;
-    logic sprite_r_en;
-    logic [SPRITE_ADDR_SIZE:0] sprite_r_addr;
-    logic [3:0] sprite_r_data;  
     
     sprite_storage storage (
         clock,
@@ -43,14 +40,7 @@ module spi_driver(
     // Draw queue module
     logic spi_data_clock;
     logic enqueue_en;
-    assign enqueue_en = command == 8'b00000001;
     logic [7:0] spi_data;
-    
-    logic is_empty;
-    logic [7:0] sprite_id;
-    logic [15:0] sprite_x;
-    logic [15:0] sprite_y;
-    logic [7:0] sprite_scale;
     
     sprite_queue draw_queue(
         .clock(spi_data_clock),
@@ -66,6 +56,8 @@ module spi_driver(
     
     // SPI reader module
     logic[7:0] command;
+    assign enqueue_en = command == 8'b00000001;
+
     spi_reader reader(
         clock,
         spi_cs,
