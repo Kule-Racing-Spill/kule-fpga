@@ -5,7 +5,6 @@
 # set_property -dict { PACKAGE_PIN A5    IOSTANDARD LVCMOS33 } [get_ports { pin_unconnectedNU4BNIO_L3P_T0_DQS_AD5P_35NPadA5 }];
 # set_property -dict { PACKAGE_PIN A6    IOSTANDARD LVCMOS33 } [get_ports { pin_P33V }];
 # set_property -dict { PACKAGE_PIN A7    IOSTANDARD LVCMOS33 } [get_ports { pin_unconnectedNU4BNIO_L1N_T0_AD4N_35NPadA7 }];
-set_property -dict { PACKAGE_PIN A8    IOSTANDARD LVCMOS33 } [get_ports { pin_FPGA_MOSI }];
 set_property -dict { PACKAGE_PIN A9    IOSTANDARD LVCMOS33 } [get_ports { pin_FPGA_GPIO0 }];
 set_property -dict { PACKAGE_PIN A10    IOSTANDARD LVCMOS33 } [get_ports { pin_FPGA_GPIO2 }];
 # set_property -dict { PACKAGE_PIN A11    IOSTANDARD LVCMOS33 } [get_ports { pin_GND }];
@@ -32,8 +31,6 @@ set_property -dict { PACKAGE_PIN B12    IOSTANDARD LVCMOS33 } [get_ports { pin_F
 # set_property -dict { PACKAGE_PIN C5    IOSTANDARD LVCMOS33 } [get_ports { pin_GND }];
 # set_property -dict { PACKAGE_PIN C6    IOSTANDARD LVCMOS33 } [get_ports { pin_unconnectedNU4BNIO_L5N_T0_AD13N_35NPadC6 }];
 # set_property -dict { PACKAGE_PIN C7    IOSTANDARD LVCMOS33 } [get_ports { pin_unconnectedNU4BNIO_L5P_T0_AD13P_35NPadC7 }];
-set_property -dict { PACKAGE_PIN C8    IOSTANDARD LVCMOS33 } [get_ports { pin_FPGA_CS }];
-set_property -dict { PACKAGE_PIN C9    IOSTANDARD LVCMOS33 } [get_ports { pin_FPGA_MISO }];
 # set_property -dict { PACKAGE_PIN C10    IOSTANDARD LVCMOS33 } [get_ports { pin_P33V }];
 set_property -dict { PACKAGE_PIN C11    IOSTANDARD LVCMOS33 } [get_ports { pin_NetNU4ANIO_L11P_T1_SRCC_15 }];
 set_property -dict { PACKAGE_PIN C12    IOSTANDARD LVCMOS33 } [get_ports { pin_NetNU4ANIO_L11N_T1_SRCC_15 }];
@@ -47,7 +44,6 @@ set_property -dict { PACKAGE_PIN D5    IOSTANDARD LVCMOS33 } [get_ports { pin_Ne
 # set_property -dict { PACKAGE_PIN D7    IOSTANDARD LVCMOS33 } [get_ports { pin_P33V }];
 set_property -dict { PACKAGE_PIN D8    IOSTANDARD LVCMOS33 } [get_ports { pin_FPGA_GPIO7 }];
 # set_property -dict { PACKAGE_PIN D9    IOSTANDARD LVCMOS33 } [get_ports { pin_unconnectedNU4ANIO_L6N_T0_VREF_15NPadD9 }];
-set_property -dict { PACKAGE_PIN D10    IOSTANDARD LVCMOS33 } [get_ports { pin_FPGA_CLK }];
 set_property -dict { PACKAGE_PIN D11    IOSTANDARD LVCMOS33 } [get_ports { pin_NetNU4ANIO_L14N_T2_SRCC_15 }];
 # set_property -dict { PACKAGE_PIN D12    IOSTANDARD LVCMOS33 } [get_ports { pin_GND }];
 set_property -dict { PACKAGE_PIN D13    IOSTANDARD LVCMOS33 } [get_ports { pin_NetNU4ANIO_L12P_T1_MRCC_15 }];
@@ -284,3 +280,11 @@ set_property -dict { PACKAGE_PIN H3    IOSTANDARD LVCMOS33 } [get_ports { lcd_vs
 
 # LCD data enable
 set_property -dict { PACKAGE_PIN K1    IOSTANDARD LVCMOS33 } [get_ports { lcd_de }];
+
+
+### SPI ###
+
+set_property -dict { PACKAGE_PIN C8    IOSTANDARD LVCMOS33 } [get_ports { spi_cs }];
+set_property -dict { PACKAGE_PIN D10   IOSTANDARD LVCMOS33 } [get_ports { spi_clk }];
+set_property -dict { PACKAGE_PIN A8    IOSTANDARD LVCMOS33 } [get_ports { spi_mosi }];
+set_property -dict { PACKAGE_PIN C9    IOSTANDARD LVCMOS33 } [get_ports { spi_miso }];

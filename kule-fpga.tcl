@@ -18,6 +18,16 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
+ "[file normalize "$origin_dir/vivado_project/spi_driver_tb_behav.wcfg"]"\
+  ]
+  foreach ifile $files {
+    if { ![file isfile $ifile] } {
+      puts " Could not find local file $ifile "
+      set status false
+    }
+  }
+
+  set files [list \
  "[file normalize "$origin_dir/src/design/top.sv"]"\
  "[file normalize "$origin_dir/src/design/screen-driver/lcd/lcd_signals.sv"]"\
  "[file normalize "$origin_dir/src/design/screen-driver/vga/vga_signals.sv"]"\
@@ -30,12 +40,20 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/src/design/screen-driver/lcd/lcd_control.sv"]"\
  "[file normalize "$origin_dir/src/include/params.vh"]"\
  "[file normalize "$origin_dir/src/design/sprite-driver/sprite_render.sv"]"\
- "[file normalize "$origin_dir/src/ips/pixel_clock_wiz/pixel_clock_wiz.xci"]"\
- "[file normalize "$origin_dir/src/ips/framebuffer_bram/framebuffer_bram.xci"]"\
  "[file normalize "$origin_dir/src/data/fb_data.coe"]"\
  "[file normalize "$origin_dir/src/memory_files/sprite.mem"]"\
  "[file normalize "$origin_dir/src/design/sprite-driver/sprite_driver.sv"]"\
+ "[file normalize "$origin_dir/src/design/spi_driver/sprite_orchestrator.sv"]"\
+ "[file normalize "$origin_dir/src/design/spi_driver/spi_driver.sv"]"\
+ "[file normalize "$origin_dir/src/design/spi_driver/sprite_storage.sv"]"\
+ "[file normalize "$origin_dir/src/design/spi_driver/spi_reader.sv"]"\
+ "[file normalize "$origin_dir/src/ips/pixel_clock_wiz/pixel_clock_wiz.xci"]"\
+ "[file normalize "$origin_dir/src/ips/framebuffer_bram/framebuffer_bram.xci"]"\
  "[file normalize "$origin_dir/src/constraints/7a100t.xdc"]"\
+ "[file normalize "$origin_dir/src/testbenches/spi_driver/sprite_orchestrator_tb.sv"]"\
+ "[file normalize "$origin_dir/src/testbenches/spi_driver/sprite_storage_tb.sv"]"\
+ "[file normalize "$origin_dir/src/testbenches/spi_driver/spi_reader_tb.sv"]"\
+ "[file normalize "$origin_dir/src/testbenches/spi_driver/spi_driver_tb.sv"]"\
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -161,14 +179,14 @@ set_property -name "simulator.xsim_version" -value "2023.1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "sim_compile_state" -value "1" -objects $obj
 set_property -name "source_mgmt_mode" -value "DisplayOnly" -objects $obj
-set_property -name "webtalk.activehdl_export_sim" -value "5" -objects $obj
-set_property -name "webtalk.modelsim_export_sim" -value "5" -objects $obj
-set_property -name "webtalk.questa_export_sim" -value "5" -objects $obj
-set_property -name "webtalk.riviera_export_sim" -value "5" -objects $obj
-set_property -name "webtalk.vcs_export_sim" -value "5" -objects $obj
-set_property -name "webtalk.xcelium_export_sim" -value "5" -objects $obj
-set_property -name "webtalk.xsim_export_sim" -value "5" -objects $obj
-set_property -name "webtalk.xsim_launch_sim" -value "8" -objects $obj
+set_property -name "webtalk.activehdl_export_sim" -value "7" -objects $obj
+set_property -name "webtalk.modelsim_export_sim" -value "7" -objects $obj
+set_property -name "webtalk.questa_export_sim" -value "7" -objects $obj
+set_property -name "webtalk.riviera_export_sim" -value "7" -objects $obj
+set_property -name "webtalk.vcs_export_sim" -value "7" -objects $obj
+set_property -name "webtalk.xcelium_export_sim" -value "7" -objects $obj
+set_property -name "webtalk.xsim_export_sim" -value "7" -objects $obj
+set_property -name "webtalk.xsim_launch_sim" -value "25" -objects $obj
 set_property -name "xpm_libraries" -value "XPM_CDC XPM_MEMORY" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
@@ -191,11 +209,13 @@ set files [list \
  [file normalize "${origin_dir}/src/design/screen-driver/lcd/lcd_control.sv"] \
  [file normalize "${origin_dir}/src/include/params.vh"] \
  [file normalize "${origin_dir}/src/design/sprite-driver/sprite_render.sv"] \
- [file normalize "${origin_dir}/src/ips/pixel_clock_wiz/pixel_clock_wiz.xci"] \
- [file normalize "${origin_dir}/src/ips/framebuffer_bram/framebuffer_bram.xci"] \
  [file normalize "${origin_dir}/src/data/fb_data.coe"] \
  [file normalize "${origin_dir}/src/memory_files/sprite.mem"] \
  [file normalize "${origin_dir}/src/design/sprite-driver/sprite_driver.sv"] \
+ [file normalize "${origin_dir}/src/design/spi_driver/sprite_orchestrator.sv"] \
+ [file normalize "${origin_dir}/src/design/spi_driver/spi_driver.sv"] \
+ [file normalize "${origin_dir}/src/design/spi_driver/sprite_storage.sv"] \
+ [file normalize "${origin_dir}/src/design/spi_driver/spi_reader.sv"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -260,30 +280,32 @@ set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/src/ips/pixel_clock_wiz/pixel_clock_wiz.xci"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "registered_with_manager" -value "1" -objects $file_obj
-if { ![get_property "is_locked" $file_obj] } {
-  set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
-}
-
-set file "$origin_dir/src/ips/framebuffer_bram/framebuffer_bram.xci"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "registered_with_manager" -value "1" -objects $file_obj
-if { ![get_property "is_locked" $file_obj] } {
-  set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
-}
-
 set file "$origin_dir/src/memory_files/sprite.mem"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "Memory File" -objects $file_obj
 
 set file "$origin_dir/src/design/sprite-driver/sprite_driver.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/design/spi_driver/sprite_orchestrator.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/design/spi_driver/spi_driver.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/design/spi_driver/sprite_storage.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/design/spi_driver/spi_reader.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
@@ -297,6 +319,48 @@ set obj [get_filesets sources_1]
 set_property -name "dataflow_viewer_settings" -value "min_width=16" -objects $obj
 set_property -name "top" -value "top" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
+
+# Set 'sources_1' fileset object
+set obj [get_filesets sources_1]
+set files [list \
+ [file normalize "${origin_dir}/src/ips/pixel_clock_wiz/pixel_clock_wiz.xci"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'sources_1' fileset file properties for remote files
+set file "$origin_dir/src/ips/pixel_clock_wiz/pixel_clock_wiz.xci"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
+set_property -name "registered_with_manager" -value "1" -objects $file_obj
+if { ![get_property "is_locked" $file_obj] } {
+  set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
+}
+
+
+# Set 'sources_1' fileset file properties for local files
+# None
+
+# Set 'sources_1' fileset object
+set obj [get_filesets sources_1]
+set files [list \
+ [file normalize "${origin_dir}/src/ips/framebuffer_bram/framebuffer_bram.xci"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'sources_1' fileset file properties for remote files
+set file "$origin_dir/src/ips/framebuffer_bram/framebuffer_bram.xci"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
+set_property -name "registered_with_manager" -value "1" -objects $file_obj
+if { ![get_property "is_locked" $file_obj] } {
+  set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
+}
+
+
+# Set 'sources_1' fileset file properties for local files
+# None
 
 # Create 'constrs_1' fileset (if not found)
 if {[string equal [get_filesets -quiet constrs_1] ""]} {
@@ -325,10 +389,51 @@ if {[string equal [get_filesets -quiet sim_1] ""]} {
 
 # Set 'sim_1' fileset object
 set obj [get_filesets sim_1]
-# Empty (no sources present)
+set files [list \
+ [file normalize "${origin_dir}/src/testbenches/spi_driver/sprite_orchestrator_tb.sv"] \
+ [file normalize "${origin_dir}/src/testbenches/spi_driver/sprite_storage_tb.sv"] \
+ [file normalize "${origin_dir}/src/testbenches/spi_driver/spi_reader_tb.sv"] \
+ [file normalize "${origin_dir}/src/testbenches/spi_driver/spi_driver_tb.sv"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Add local files from the original project (-no_copy_sources specified)
+set files [list \
+ [file normalize "${origin_dir}/vivado_project/spi_driver_tb_behav.wcfg" ]\
+]
+set added_files [add_files -fileset sim_1 $files]
+
+# Set 'sim_1' fileset file properties for remote files
+set file "$origin_dir/src/testbenches/spi_driver/sprite_orchestrator_tb.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/testbenches/spi_driver/sprite_storage_tb.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/testbenches/spi_driver/spi_reader_tb.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/src/testbenches/spi_driver/spi_driver_tb.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+
+# Set 'sim_1' fileset file properties for local files
+# None
 
 # Set 'sim_1' fileset properties
 set obj [get_filesets sim_1]
+set_property -name "top" -value "spi_driver_tb" -objects $obj
+set_property -name "top_auto_set" -value "0" -objects $obj
+set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
+set_property -name "xsim.simulate.runtime" -value "100000ns" -objects $obj
 
 # Set 'utils_1' fileset object
 set obj [get_filesets utils_1]
