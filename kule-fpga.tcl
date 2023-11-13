@@ -34,6 +34,7 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/src/ips/framebuffer_bram/framebuffer_bram.xci"]"\
  "[file normalize "$origin_dir/src/data/fb_data.coe"]"\
  "[file normalize "$origin_dir/src/memory_files/sprite.mem"]"\
+ "[file normalize "$origin_dir/src/design/sprite-driver/sprite_driver.sv"]"\
  "[file normalize "$origin_dir/src/constraints/7a100t.xdc"]"\
   ]
   foreach ifile $files {
@@ -194,6 +195,7 @@ set files [list \
  [file normalize "${origin_dir}/src/ips/framebuffer_bram/framebuffer_bram.xci"] \
  [file normalize "${origin_dir}/src/data/fb_data.coe"] \
  [file normalize "${origin_dir}/src/memory_files/sprite.mem"] \
+ [file normalize "${origin_dir}/src/design/sprite-driver/sprite_driver.sv"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -280,6 +282,11 @@ set file "$origin_dir/src/memory_files/sprite.mem"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "Memory File" -objects $file_obj
+
+set file "$origin_dir/src/design/sprite-driver/sprite_driver.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
 
 # Set 'sources_1' fileset file properties for local files
