@@ -11,7 +11,7 @@ module sprite_storage(
     input logic [SPRITE_ADDR_SIZE:0] r_addr,
     output logic [3:0] r_data
     );
-    
+    /*
     logic sb_w_en[SPRITE_NUM-1:0];
     logic sb_r_en[SPRITE_NUM-1:0];
     
@@ -30,6 +30,16 @@ module sprite_storage(
         assign sb_w_en[i] = sprite_select == i && w_en;
         assign sb_r_en[i] = sprite_select == i && r_en;
     end
+    */
+
+    rom_async #(
+        .WIDTH(4),
+        .DEPTH(1024),
+        .INIT_F("sprite.mem")
+    ) spr_rom (
+        .addr(r_addr),
+        .data(r_data)
+    );
 endmodule
 
 module spritebuffer(

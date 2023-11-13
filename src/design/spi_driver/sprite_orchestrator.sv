@@ -18,18 +18,22 @@ module sprite_queue(
     logic [15:0] sprite_y_queue [QUEUE_SIZE-1:0];
     logic [7:0] sprite_scale_queue [QUEUE_SIZE-1:0];
     
-    logic [$clog2(QUEUE_SIZE)-1:0] queue_size;
-    logic [2:0] read_index;
+    logic [$clog2(QUEUE_SIZE)-1:0] queue_size = 1;
+    logic [2:0] read_index = 0;
     
     initial begin
-        queue_size = 0;
-        read_index = 0;
-        assign is_empty = queue_size == 0;
-        assign sprite_id = sprite_id_queue[0];
-        assign sprite_x = sprite_x_queue[0];
-        assign sprite_y = sprite_y_queue[0];
-        assign sprite_scale = sprite_scale_queue[0];
+        sprite_id_queue[0] = 8'b00000001;
+        sprite_x_queue[0] = 200;
+        sprite_y_queue[0] = 200;
+        sprite_scale_queue[0] = 8'b00000000;
     end
+
+    assign is_empty = queue_size == 0;
+    assign sprite_id = sprite_id_queue[0];
+    assign sprite_x = sprite_x_queue[0];
+    assign sprite_y = sprite_y_queue[0];
+    assign sprite_scale = sprite_scale_queue[0];
+
     
     always @(posedge clock) begin
         if (enqueue_en) begin

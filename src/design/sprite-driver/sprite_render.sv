@@ -11,27 +11,18 @@ module sprite_render #(
     input  wire logic rst,                           // reset
     input  wire logic enable,
     input  wire logic [CORDW-1:0] sx, sy,      // screen position
+    output wire logic [SPRITE_ADDR_SIZE:0] sprite_r_addr,
+    input  wire logic [3:0] sprite_r_data,
     output wire logic [18:0] addr,                     // address to write to fb
     output      logic [SPR_DATAW-1:0] pix,            // pixel colour index
     output      logic drawing                   // bram enable
     );
     
-    wire logic [5:0] spr_rom_addr;
-    logic [SPR_DATAW-1:0] spr_rom_data;
-    
+;
     logic [((SPR_WIDTH > SPR_HEIGHT) ? $clog2(SPR_WIDTH) : $clog2(SPR_HEIGHT)):0] sprx, spry;
     
-    assign spr_rom_addr = sprx + spry * SPR_WIDTH;
+    assign sprite_r_addr = sprx + spry * SPR_WIDTH;
     assign addr = (FRAMEBUFFER_SIZE > 192000) ? (sx + sprx) + (sy + spry) * 800 : ((sx + sprx) + (sy + spry) * 800)/2;
-    
-    rom_async #(
-        .WIDTH(SPR_DATAW),
-        .DEPTH(64),
-        .INIT_F("sprite.mem")
-    ) spr_rom (
-        .addr(spr_rom_addr),
-        .data(spr_rom_data)
-    );
     
     logic finish;
     
@@ -46,7 +37,7 @@ module sprite_render #(
                 end else spry <= spry + 1;
             end else sprx <= sprx + 1;
             
-            pix <= spr_rom_data;
+            pix <= sprite_r_data;
         end else drawing <= 0;
         if (rst) begin
             sprx <= 0;

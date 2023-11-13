@@ -3,7 +3,7 @@
 
 localparam FRAMEBUFFER_SIZE = 384000;
 localparam SPRITE_NUM = 4;
-localparam SPRITE_SIZE = 1024;
+localparam SPRITE_SIZE = 4096;
 localparam SPRITE_ADDR_SIZE = $clog2(SPRITE_SIZE)-1;
 
 localparam COMMAND_SAVE_SPRITE = 8'b00000010;

@@ -12,8 +12,22 @@ module sprite_driver(
     output wire logic [18:0] wr2_addr,
     output wire logic [3:0] wr2_data,
     output wire logic wr2_en,
-    input logic fb_resetting
+    input logic fb_resetting,
+    // sprite memory
+    output logic sprite_r_en,
+    output logic [SPRITE_ADDR_SIZE:0] sprite_r_addr,
+    input logic [3:0] sprite_r_data,
+    // Sprite draw queue
+    output logic sprite_queue_dequeue,
+    input logic sprite_queue_is_empty,
+    input logic [7:0] sprite_queue_sprite_id,
+    input logic [15:0] sprite_queue_sprite_x,
+    input logic [15:0] sprite_queue_sprite_y,
+    input logic [7:0] sprite_queue_sprite_scale
     );
+
+    assign sprite_r_en = 1;
+    assign sprite_queue_dequeue = 0;
     
     wire logic [18:0] sr0_addr, sr1_addr;
     wire logic sr0_drawing, sr1_drawing;
@@ -42,12 +56,15 @@ module sprite_driver(
         reset || fb_resetting,
         sr0_en,
         spr1x,
-        100,
+        sprite_queue_sprite_y,
+        sprite_r_addr,
+        sprite_r_data,
         sr0_addr,
         sr0_data,
         sr0_drawing
     );
     
+    /*
     sprite_render sr1(
         clock,
         reset || fb_resetting,
@@ -58,4 +75,5 @@ module sprite_driver(
         sr1_data,
         sr1_drawing
     );
+    */
 endmodule

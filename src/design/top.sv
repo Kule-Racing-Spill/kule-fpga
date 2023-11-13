@@ -140,7 +140,16 @@ module top (
         addr_wr2,
         data_wr2,
         wr2_en,
-        fb_resetting
+        fb_resetting,
+        sprite_r_en,
+        sprite_r_addr,
+        sprite_r_data,
+        sprite_queue_dequeue,
+        sprite_queue_is_empty,
+        sprite_queue_sprite_id,
+        sprite_queue_sprite_x,
+        sprite_queue_sprite_y,
+        sprite_queue_sprite_scale
     );
 
 endmodule
