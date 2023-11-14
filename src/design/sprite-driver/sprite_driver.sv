@@ -31,7 +31,7 @@ module sprite_driver(
     wire logic [18:0] sr0_addr, sr1_addr;
     logic [3:0] sr0_data, sr1_data;
     wire logic sprite0_drawing, sprite1_drawing;
-    wire logic sprite0_en, sprite1_en;
+    wire logic sprite0_en, sprite1_en, sprite0_rst, sprite1_rst;
     logic [9:0] sprite0_x, sprite0_y, sprite1_x, sprite1_y;
     logic [7:0] sprite0_scale, sprite1_scale;
     logic sprite0_finished, sprite1_finished;
@@ -53,12 +53,14 @@ module sprite_driver(
         .sprite_queue_sprite_y,
         .sprite_queue_sprite_scale,
         .sprite0_en,
+        .sprite0_rst,
         .sprite0_id(sprite_r0_select),
         .sprite0_x,
         .sprite0_y,
         .sprite0_scale,
         .sprite0_finished,
         .sprite1_en,
+        .sprite1_rst,
         .sprite1_id(sprite_r1_select),
         .sprite1_x,
         .sprite1_y,
@@ -75,7 +77,7 @@ module sprite_driver(
     
     sprite_render sr0(
         .clk(clock),
-        .rst(reset || fb_resetting),
+        .rst(reset || fb_resetting || sprite0_rst),
         .enable(sprite0_en),
         .sx(sprite0_x),
         .sy(sprite0_y),
@@ -90,7 +92,7 @@ module sprite_driver(
     
     sprite_render sr1(
         .clk(clock),
-        .rst(reset || fb_resetting),
+        .rst(reset || fb_resetting || sprite1_rst),
         .enable(1),//sprite1_en),
         .sx(400),//sprite1_x),
         .sy(300),//sprite1_y),
@@ -114,12 +116,14 @@ module sprite_distributor (
     input logic [7:0] sprite_queue_sprite_scale,
     // sprite render 0
     output logic sprite0_en,
+    output logic sprite0_rst,
     output logic [7:0] sprite0_id,
     output logic [15:0] sprite0_x, sprite0_y,
     output logic [7:0] sprite0_scale,
     input logic sprite0_finished,
     // sprite render 1
     output logic sprite1_en,
+    output logic sprite1_rst,
     output logic [7:0] sprite1_id,
     output logic [15:0] sprite1_x, sprite1_y,
     output logic [7:0] sprite1_scale,
@@ -131,14 +135,17 @@ module sprite_distributor (
         end
 
         if(sprite0_en && sprite0_finished) begin
+            sprite0_rst <= 1;
             sprite0_en <= 0;
         end
         if(sprite1_en && sprite1_finished) begin
+            sprite1_rst <= 1;
             sprite1_en <= 0;
         end
 
         if (!sprite_queue_is_empty && !sprite_queue_dequeue) begin
             if (!sprite0_en) begin
+                sprite0_rst <= 0;
                 sprite0_en <= 1;
                 sprite0_id <= sprite_queue_sprite_id;
                 sprite0_x <= sprite_queue_sprite_x;
@@ -146,6 +153,7 @@ module sprite_distributor (
                 sprite0_scale <= sprite_queue_sprite_scale;
                 sprite_queue_dequeue <= 1;
             end else if (!sprite1_en) begin
+                sprite1_rst <= 0;
                 sprite1_en <= 1;
                 sprite1_id <= sprite_queue_sprite_id;
                 sprite1_x <= sprite_queue_sprite_x;
