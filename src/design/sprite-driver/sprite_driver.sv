@@ -84,7 +84,7 @@ module sprite_driver(
         .sprite_r_data(sprite_r0_data),
         .addr(sr0_addr),
         .pix(sr0_data),
-        .drawing(sprite0_drawing)
+        .drawing(sprite0_drawing),
         .finished(sprite0_finished)
     );
     
@@ -99,7 +99,7 @@ module sprite_driver(
         .sprite_r_data(sprite_r1_data),
         .addr(sr1_addr),
         .pix(sr1_data),
-        .drawing(sprite1_drawing)
+        .drawing(sprite1_drawing),
         .finished(sprite0_finished)
     );
 endmodule
