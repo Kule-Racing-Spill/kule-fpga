@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-localparam QUEUE_SIZE = 8;
+localparam QUEUE_SIZE = 64;
 
 module sprite_queue(
     input wire logic clock,
@@ -45,7 +45,7 @@ module sprite_queue(
     
     always @(posedge clock) begin
         if (old_data_clk != data_clk && data_clk) begin
-            if (enqueue_en) begin
+            if (enqueue_en && queue_size < QUEUE_SIZE) begin
                 read_index <= read_index + 1;
                 if (read_index == 0) begin
                     sprite_id_queue[queue_size] <= enqueue_data;
