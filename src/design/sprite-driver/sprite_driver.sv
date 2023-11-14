@@ -34,6 +34,7 @@ module sprite_driver(
     wire logic sprite0_en, sprite1_en;
     logic [15:0] sprite0_x, sprite0_y, sprite1_x, sprite1_y;
     logic [7:0] sprite0_scale, sprite1_scale;
+    logic sprite0_finished, sprite1_finished;
     
     assign wr1_addr = sr0_addr;
     assign wr1_data = sr0_data;
@@ -56,13 +57,13 @@ module sprite_driver(
         .sprite0_x,
         .sprite0_y,
         .sprite0_scale,
-        .sprite0_drawing,
+        .sprite0_finished,
         .sprite1_en,
         .sprite1_id(sprite_r1_select),
         .sprite1_x,
         .sprite1_y,
         .sprite1_scale,
-        .sprite1_drawing
+        .sprite1_finished
     );
     
     logic [9:0] spr1x = 0, spr2x = 100;
@@ -83,7 +84,8 @@ module sprite_driver(
         .sprite_r_data(sprite_r0_data),
         .addr(sr0_addr),
         .pix(sr0_data),
-        .drawing(sr0_drawing)
+        .drawing(sr0_drawing),
+        .finished(sprite0_finished)
     );
     
     sprite_render sr1(
@@ -97,7 +99,8 @@ module sprite_driver(
         .sprite_r_data(sprite_r1_data),
         .addr(sr1_addr),
         .pix(sr1_data),
-        .drawing(sr1_drawing)
+        .drawing(sr1_drawing),
+        .finished(sprite0_finished)
     );
 endmodule
 
@@ -114,23 +117,23 @@ module sprite_distributor (
     output logic [7:0] sprite0_id,
     output logic [15:0] sprite0_x, sprite0_y,
     output logic [7:0] sprite0_scale,
-    input logic sprite0_drawing,
+    input logic sprite0_finished,
     // sprite render 1
     output logic sprite1_en,
     output logic [7:0] sprite1_id,
     output logic [15:0] sprite1_x, sprite1_y,
     output logic [7:0] sprite1_scale,
-    input logic sprite1_drawing
+    input logic sprite1_finished
 );
     always_ff @(posedge clock) begin
         if (sprite_queue_dequeue) begin
             sprite_queue_dequeue <= 0;
         end
 
-        if(sprite0_en && !sprite0_drawing) begin
+        if(sprite0_en && sprite0_finished) begin
             sprite0_en <= 0;
         end
-        if(sprite1_en && !sprite1_drawing) begin
+        if(sprite1_en && sprite1_finished) begin
             sprite1_en <= 0;
         end
 

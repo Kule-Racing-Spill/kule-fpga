@@ -39,6 +39,7 @@ module vga_colormap(
         colors[1] <= 15'b000110101000010;
         colors[2] <= 15'b011010000001000;
         colors[3] <= 15'b011110110100000;
+        // colors[15] is transparent
     end
     
     // drive the color
