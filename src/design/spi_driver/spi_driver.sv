@@ -49,7 +49,8 @@ module spi_driver(
     logic [7:0] spi_data;
     
     sprite_queue draw_queue(
-        .clock(spi_data_clock),
+        .clock(clock),
+        .data_clk(spi_data_clock),
         .enqueue_en,
         .enqueue_data(spi_data),
         .dequeue,

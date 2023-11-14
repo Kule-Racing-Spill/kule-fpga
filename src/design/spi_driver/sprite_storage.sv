@@ -18,46 +18,34 @@ module sprite_storage(
     output logic [3:0] r1_data
     );
     
-    logic sb_w_en[SPRITE_NUM-1:0];
-    logic sb_r0_en[SPRITE_NUM-1:0];
-    logic sb_r1_en[SPRITE_NUM-1:0];
+    // port a needs to switch
+    logic [SPRITE_ADDR_SIZE:0] addra, addrb;
     
-    // TEMPORARY FOR TESTING
-    spritebuffer #(
-        .INIT_F("sprite.mem")
-    ) sb[1:0](
-        .clock(clock),
-        .sb_w_en(sb_w_en[1:0]),
-        .sb_w_addr(w_addr),
-        .sb_w_data(w_data),
-        .sb_r0_en(sb_r0_en[1:0]),
-        .sb_r0_addr(r0_addr),
-        .sb_r0_data(r0_data),
-        .sb_r1_en(sb_r1_en[1:0]),
-        .sb_r1_addr(r1_addr),
-        .sb_r1_data(r1_data)
-    );
-    spritebuffer #(
-        .INIT_F("sad_sprite.mem")
-    ) sb2[1:0](
-        .clock(clock),
-        .sb_w_en(sb_w_en[3:2]),
-        .sb_w_addr(w_addr),
-        .sb_w_data(w_data),
-        .sb_r0_en(sb_r0_en[3:2]),
-        .sb_r0_addr(r0_addr),
-        .sb_r0_data(r0_data),
-        .sb_r1_en(sb_r1_en[3:2]),
-        .sb_r1_addr(r1_addr),
-        .sb_r1_data(r1_data)
-    );
-   
-    genvar i;
-    for (i = 0; i < SPRITE_NUM; i = i + 1) begin
-        assign sb_w_en[i] = w_select == i && w_en;
-        assign sb_r0_en[i] = r0_select == i;
-        assign sb_r1_en[i] = r1_select == i;
+    // pin b write to low
+    logic [7:0] dinb = 0;
+    logic web = 0;
+    
+    always_comb begin
+        if (w_en) begin
+            addra <= w_addr + SPRITE_WORD_SIZE * w_select;
+        end else begin
+            addra <= r0_addr + SPRITE_WORD_SIZE * r0_select;
+        end
+        addrb <= r1_addr + SPRITE_WORD_SIZE * r1_select;
     end
+    
+    sprite_bram spritebuffer(
+        .addra(addra),
+        .clka(clock),
+        .dina(w_data),
+        .douta(r0_data),
+        .wea(w_en),
+        .addrb(addrb),
+        .clkb(clock),
+        .dinb(dinb),
+        .doutb(r1_data),
+        .web(web)
+    );
 endmodule
 
 module spritebuffer #(

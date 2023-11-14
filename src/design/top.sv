@@ -26,6 +26,22 @@ module top (
     output logic spi_miso,
     input logic [2:0] sw
 );
+
+    // for now, pin reset to low
+    logic reset = 0;
+
+    // clock and lock signal for clocking wizard
+    wire logic pixel_clk;
+    logic locked;
+            
+    // generate pixel clock
+    pixel_clock_wiz pix_clock(
+        .clk_in(clock),
+        .clk_out(pixel_clk),
+        .locked(locked),
+        .reset(reset)
+    );
+    
     // Sprite memory interface
     logic [$clog2(SPRITE_NUM)-1:0] sprite_r0_select;
     logic [SPRITE_ADDR_SIZE:0] sprite_r0_addr;
@@ -45,7 +61,7 @@ module top (
 
     // SPI reader module
     spi_driver spi(
-        .clock,
+        .clock(pixel_clk),
         .spi_mosi,
         .spi_miso,
         .spi_clk,
@@ -64,8 +80,6 @@ module top (
         .sprite_scale(sprite_queue_sprite_scale)
     );
     
-    // for now, pin reset to low
-    logic reset = 0;
     
     // VGA takes the most time to draw active pixels, therefore
     // the global vsync should follow this
@@ -80,18 +94,6 @@ module top (
     wire logic [3:0] data_wr2;
     wire logic wr1_en; 
     wire logic wr2_en;
-    
-    // clock and lock signal for clocking wizard
-    wire logic pixel_clk;
-    logic locked;
-            
-    // generate pixel clock
-    pixel_clock_wiz pix_clock(
-        .clk_in(clock),
-        .clk_out(pixel_clk),
-        .locked(locked),
-        .reset(reset)
-    );
     
     // framebuffer reset
     logic fb_resetting;

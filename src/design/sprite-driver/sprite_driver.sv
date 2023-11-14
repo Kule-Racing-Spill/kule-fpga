@@ -32,7 +32,7 @@ module sprite_driver(
     logic [3:0] sr0_data, sr1_data;
     wire logic sprite0_drawing, sprite1_drawing;
     wire logic sprite0_en, sprite1_en;
-    logic [15:0] sprite0_x, sprite0_y, sprite1_x, sprite1_y;
+    logic [9:0] sprite0_x, sprite0_y, sprite1_x, sprite1_y;
     logic [7:0] sprite0_scale, sprite1_scale;
     logic sprite0_finished, sprite1_finished;
     
@@ -84,22 +84,22 @@ module sprite_driver(
         .sprite_r_data(sprite_r0_data),
         .addr(sr0_addr),
         .pix(sr0_data),
-        .drawing(sr0_drawing),
+        .drawing(sprite0_drawing)
         .finished(sprite0_finished)
     );
     
     sprite_render sr1(
         .clk(clock),
         .rst(reset || fb_resetting),
-        .enable(sprite1_en),
-        .sx(sprite1_x),
-        .sy(sprite1_y),
+        .enable(1),//sprite1_en),
+        .sx(400),//sprite1_x),
+        .sy(300),//sprite1_y),
         .sprite_scale(sprite1_scale),
         .sprite_r_addr(sprite_r1_addr),
         .sprite_r_data(sprite_r1_data),
         .addr(sr1_addr),
         .pix(sr1_data),
-        .drawing(sr1_drawing),
+        .drawing(sprite1_drawing)
         .finished(sprite0_finished)
     );
 endmodule
