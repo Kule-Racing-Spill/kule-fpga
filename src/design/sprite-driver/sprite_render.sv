@@ -17,8 +17,10 @@ module sprite_render #(
     output wire logic [18:0] addr,                     // address to write to fb
     output      logic [SPR_DATAW-1:0] pix,            // pixel colour index
     output      logic drawing,                   // bram enable
-    output      logic finish
+    output      logic finished
     );
+    
+    logic finish;
     
     logic [CORDW-1:0] writing_x, writing_y = 0;
     logic [2:0] count_x, count_y = 0;
@@ -26,8 +28,7 @@ module sprite_render #(
     
     assign sprite_r_addr = reading_x + reading_y * SPR_WIDTH;
     assign addr = (FRAMEBUFFER_SIZE > 192000) ? (sx + writing_x) + (sy + writing_y) * 800 : ((sx + writing_x) + (sy + writing_y) * 800)/2;
-    
-    logic finish;
+    assign finished = finish;
     
     
     always_ff @(posedge clk) begin

@@ -102,7 +102,7 @@ module sprite_driver(
         .addr(sr1_addr),
         .pix(sr1_data),
         .drawing(sprite1_drawing),
-        .finished(sprite0_finished)
+        .finished(sprite1_finished)
     );
 endmodule
 
