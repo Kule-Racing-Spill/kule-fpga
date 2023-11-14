@@ -11,7 +11,7 @@ module sprite_storage(
     // read 1
     input logic [$clog2(SPRITE_NUM)-1:0] r0_select,
     input logic [SPRITE_ADDR_SIZE:0] r0_addr,
-    output logic [3:0] r0_data
+    output logic [3:0] r0_data,
     // read 2
     input logic [$clog2(SPRITE_NUM)-1:0] r1_select,
     input logic [SPRITE_ADDR_SIZE:0] r1_addr,
@@ -23,9 +23,9 @@ module sprite_storage(
     logic sb_r1_en[SPRITE_NUM-1:0];
     
     // TEMPORARY FOR TESTING
-    spritebuffer sb[1:0] #(
+    spritebuffer #(
         .INIT_F("sprite.mem")
-    )(
+    ) sb[1:0](
         .clock(clock),
         .sb_w_en(sb_w_en[1:0]),
         .sb_w_addr(w_addr),
@@ -37,9 +37,9 @@ module sprite_storage(
         .sb_r1_addr(r1_addr),
         .sb_r1_data(r1_data)
     );
-    spritebuffer sb[1:0] #(
+    spritebuffer #(
         .INIT_F("sad_sprite.mem")
-    )(
+    ) sb2[1:0](
         .clock(clock),
         .sb_w_en(sb_w_en[3:2]),
         .sb_w_addr(w_addr),
@@ -71,7 +71,7 @@ module spritebuffer #(
     // Read port 1 (4bit pixel value)
     input logic sb_r0_en,
     input logic [SPRITE_ADDR_SIZE:0] sb_r0_addr,
-    output logic [3:0] sb_r0_data
+    output logic [3:0] sb_r0_data,
     // Read port 2 (4bit pixel value)
     input logic sb_r1_en,
     input logic [SPRITE_ADDR_SIZE:0] sb_r1_addr,

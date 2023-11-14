@@ -62,7 +62,7 @@ module sprite_driver(
         .sprite1_x,
         .sprite1_y,
         .sprite1_scale,
-        .sprite1_drawing,
+        .sprite1_drawing
     );
     
     logic [9:0] spr1x = 0, spr2x = 100;
@@ -78,7 +78,7 @@ module sprite_driver(
         .enable(sprite0_en),
         .sx(sprite0_x),
         .sy(sprite0_y),
-        .sprite_scale(sprite0_scale)
+        .sprite_scale(sprite0_scale),
         .sprite_r_addr(sprite_r0_addr),
         .sprite_r_data(sprite_r0_data),
         .addr(sr0_addr),
@@ -92,7 +92,7 @@ module sprite_driver(
         .enable(sprite1_en),
         .sx(sprite1_x),
         .sy(sprite1_y),
-        .sprite_scale(sprite1_scale)
+        .sprite_scale(sprite1_scale),
         .sprite_r_addr(sprite_r1_addr),
         .sprite_r_data(sprite_r1_data),
         .addr(sr1_addr),
@@ -108,7 +108,7 @@ module sprite_distributor (
     input logic sprite_queue_is_empty,
     input logic [7:0] sprite_queue_sprite_id,
     input logic [15:0] sprite_queue_sprite_x, sprite_queue_sprite_y,
-    input logic [7:0] sprite_queue_sprite_scale
+    input logic [7:0] sprite_queue_sprite_scale,
     // sprite render 0
     output logic sprite0_en,
     output logic [7:0] sprite0_id,

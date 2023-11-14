@@ -35,10 +35,10 @@ module spi_driver(
         .w_en(sprite_w_en),
         .w_addr(sprite_w_addr),
         .w_data(sprite_w_data),
-        .r0_select(sprite_r0_select)
+        .r0_select(sprite_r0_select),
         .r0_addr(sprite_r0_addr),
-        .r0_data(sprite_r0_data)
-        .r1_select(sprite_r1_select)
+        .r0_data(sprite_r0_data),
+        .r1_select(sprite_r1_select),
         .r1_addr(sprite_r1_addr),
         .r1_data(sprite_r1_data)
     );
