@@ -37,11 +37,13 @@ module sprite_render #(
             if (writing_x == (SPR_WIDTH + SPR_WIDTH * sprite_scale) - 1) begin
                 reading_x <= 0;
                 writing_x <= 0;
+                count_x <= 0;
                 
                 if (writing_y == (SPR_HEIGHT + SPR_HEIGHT * sprite_scale) - 1) begin
                     finish <= 1;
                     reading_y <= 0;
                     writing_y <= 0;
+                    count_y <= 0;
                 end else begin
                     writing_y <= writing_y + 1;
                     if (count_y == sprite_scale) begin
