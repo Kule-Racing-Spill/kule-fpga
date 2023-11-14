@@ -22,18 +22,27 @@ endmodule
 module lcd_colormap(
     input logic [3:0] index,
     output logic [23:0] color
-    );
-    // variables for counting
-    integer i;
-    
+    );    
     // color array. Contains 16 24-bit colors
     logic [23:0] colors [0:15];
     
-    // TODO: fill with better colors
     initial begin
-        for (i = 2; i < 16; i = i + 1) colors[i] <= 24'h0E7007 + i;
-        colors[0] <= 24'h00AAE4;
-        colors[1] <= 24'h04A443;
+        colors[0] <= 24'h232228;
+        colors[1] <= 24'h5f5854;
+        colors[2] <= 24'hb8b095;
+        colors[3] <= 24'h284261;
+        colors[4] <= 24'h2485a6;
+        colors[5] <= 24'h54bad2;
+        colors[6] <= 24'h754d45;
+        colors[7] <= 24'hc65046;
+        colors[8] <= 24'he6928a;
+        colors[9] <= 24'h1e7453;
+        colors[10] <= 24'h55a058;
+        colors[11] <= 24'ha1bf41;
+        colors[12] <= 24'he3c054;
+        colors[13] <= 24'hc3d5c7;
+        colors[14] <= 24'hebecdc;
+        colors[15] <= 24'h000000;
     end
     
     // drive color specified by index
