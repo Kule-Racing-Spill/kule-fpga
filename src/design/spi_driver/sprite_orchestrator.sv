@@ -69,18 +69,11 @@ module sprite_queue(
         old_data_clk <= data_clk;
         if (dequeue != old_dequeue && dequeue) begin
             if (!is_empty) begin
-                /*
                 queue_size <= queue_size - 1;
                 sprite_id_queue <= { 8'b00000000, sprite_id_queue[QUEUE_SIZE-1:1] };
                 sprite_x_queue <= { 8'b00000000, sprite_x_queue[QUEUE_SIZE-1:1] };
                 sprite_y_queue <= { 8'b00000000, sprite_y_queue[QUEUE_SIZE-1:1] };
                 sprite_scale_queue <= { 8'b00000000, sprite_scale_queue[QUEUE_SIZE-1:1] };
-                */
-                // swap two sprites for testing
-                sprite_id_queue <= { sprite_id_queue[QUEUE_SIZE-1:2], sprite_id_queue[0], sprite_id_queue[1] };
-                sprite_x_queue <= { sprite_x_queue[QUEUE_SIZE-1:2], sprite_x_queue[0], sprite_x_queue[1] };
-                sprite_y_queue <= { sprite_y_queue[QUEUE_SIZE-1:2], sprite_y_queue[0], sprite_y_queue[1] };
-                sprite_scale_queue <= { sprite_scale_queue[QUEUE_SIZE-1:2], sprite_scale_queue[0], sprite_scale_queue[1] };
             end
         end
         old_dequeue <= dequeue;

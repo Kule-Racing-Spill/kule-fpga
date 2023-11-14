@@ -93,9 +93,9 @@ module sprite_driver(
     sprite_render sr1(
         .clk(clock),
         .rst(reset || fb_resetting || sprite1_rst),
-        .enable(1),//sprite1_en),
-        .sx(400),//sprite1_x),
-        .sy(300),//sprite1_y),
+        .enable(sprite1_en),
+        .sx(sprite1_x),
+        .sy(sprite1_y),
         .sprite_scale(sprite1_scale),
         .sprite_r_addr(sprite_r1_addr),
         .sprite_r_data(sprite_r1_data),

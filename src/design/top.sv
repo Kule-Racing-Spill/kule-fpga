@@ -24,7 +24,7 @@ module top (
     input logic spi_clk,
     input logic spi_mosi,
     output logic spi_miso,
-    input logic [2:0] sw
+    output logic fb_reset
 );
 
     // for now, pin reset to low
@@ -100,6 +100,8 @@ module top (
     
     // color index for vga and lcd
     logic [3:0] data_vga, data_lcd;
+    
+    assign fb_reset = fb_resetting;
     
     // initiate framebuffers
     framebuffer_master fb_master(
