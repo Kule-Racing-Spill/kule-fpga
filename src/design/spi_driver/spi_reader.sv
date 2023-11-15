@@ -26,8 +26,8 @@ module spi_byte_reader (
             // send read byte to output data
             if (read_index == 0 && ~initial_bit) begin
                 data <= read_buffer;
-                byte_read <= 1;
-            end else byte_read <= 0;
+                internal_byte_read <= 1;
+            end else internal_byte_read <= 0;
 
             // read next bit
             if (sck_posedge) begin
