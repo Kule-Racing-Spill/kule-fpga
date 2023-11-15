@@ -26,7 +26,6 @@ module top (
     output logic spi_miso,
     output logic fb_reset
 );
-
     // for now, pin reset to low
     logic reset = 0;
 

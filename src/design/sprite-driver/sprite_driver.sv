@@ -69,27 +69,39 @@ module sprite_driver(
     );
     
     logic [9:0] spr1x = 0, spr2x = 100;
+    logic [7:0] scaling = 8'b00000001;
     
     always_ff @(posedge fb_resetting) begin
         spr1x <= (spr1x + 1) % 800;
         spr2x <= (spr2x + 1) % 800;
+        if (scaling == 8'hff) scaling <= 1;
+        else scaling <= scaling + 1;
     end
+    
+    logic [10:0] rom_addr;
+    logic [3:0] rom_data;
+    
+    rom_async #(.WIDTH(16), .DEPTH(256), .INIT_F("sprite.mem")) rom (
+        rom_addr,
+        rom_data
+    );
     
     sprite_render sr0(
         .clk(clock),
-        .rst(reset || fb_resetting || sprite0_rst),
-        .enable(sprite0_en),
-        .sx(sprite0_x),
-        .sy(sprite0_y),
-        .sprite_scale(sprite0_scale),
-        .sprite_r_addr(sprite_r0_addr),
-        .sprite_r_data(sprite_r0_data),
+        .rst(reset || fb_resetting), //|| sprite0_rst),
+        .enable(1),//sprite0_en),
+        .sx(100),//sprite0_x),
+        .sy(100),//sprite0_y),
+        .sprite_scale(8'b00010000),//scaling),//sprite0_scale),
+        .sprite_r_addr(rom_addr),//sprite_r0_addr),
+        .sprite_r_data(rom_data),//sprite_r0_data),
         .addr(sr0_addr),
         .pix(sr0_data),
         .drawing(sprite0_drawing),
         .finished(sprite0_finished)
     );
     
+    /*
     sprite_render sr1(
         .clk(clock),
         .rst(reset || fb_resetting || sprite1_rst),
@@ -104,6 +116,7 @@ module sprite_driver(
         .drawing(sprite1_drawing),
         .finished(sprite1_finished)
     );
+    */
 endmodule
 
 module sprite_distributor (
