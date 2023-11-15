@@ -53,7 +53,6 @@ module spi_command_parser (
     output logic[15:0] data_index
     );
     logic[15:0] data_count = 0; // number of bytes to read for the current command
-    initial data_index = 0;
 
     always_ff @(posedge clock) begin
         if (reset) begin
