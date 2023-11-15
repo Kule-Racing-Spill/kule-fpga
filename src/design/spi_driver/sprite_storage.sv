@@ -61,7 +61,6 @@ module spi_store_write_controller(
     output logic [7:0] w_data,
 );
     assign w_data = data;
-    assign w_addr = (data_index - 1) << 1;
 
     always_ff @(posedge clock) begin
         if (reset) begin
@@ -71,8 +70,10 @@ module spi_store_write_controller(
                 if (data_index == 0) begin
                     w_select <= data;
                     w_en <= 0;
+                    w_addr <= 0;
                 end else begin
                     w_en <= 1;
+                    w_addr <= (data_index - 1) << 1;
                 end
             end
         end
