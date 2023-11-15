@@ -1,7 +1,7 @@
 module spi_driver(
     input wire clock,                   // FPGA clock
     input wire spi_mosi,                // SPI: Master out / slave in
-    input wire spi_miso,                // SPI: Master in / slave out (currently unused)
+//    input wire spi_miso,                // SPI: Master in / slave out (currently unused)
     input wire spi_clk,                 // SPI: clock
     input wire spi_cs,                  // SPI: chip select
     input wire [$clog2(SPRITE_NUM)-1:0] sprite_r0_select,
