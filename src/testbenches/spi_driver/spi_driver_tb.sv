@@ -4,7 +4,7 @@ module spi_driver_tb();
 
 reg clk;
 reg spi_mosi;
-wire spi_miso;
+//wire spi_miso;
 reg spi_sck;
 reg spi_cs;
 reg sprite_r_en;
@@ -22,7 +22,7 @@ always #5 clk = !clk;
 spi_driver spi_driver(
     .sys_clock(clk),
     .spi_mosi,
-    .spi_miso,
+//    .spi_miso,
     .spi_sck,
     .spi_cs,
     .sprite_r_en,

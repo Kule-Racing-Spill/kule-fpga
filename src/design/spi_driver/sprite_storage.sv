@@ -48,45 +48,34 @@ module sprite_storage(
     );
 endmodule
 
-module spritebuffer #(
-    parameter INIT_F="sprite.mem"
-)(
-    input logic clock,
-    // Write port (full byte from SPI)
-    input logic sb_w_en,          // active high
-    input logic [SPRITE_ADDR_SIZE:0] sb_w_addr,   // address bus, NB: addresses 4-bits, not bytes
-    input logic [7:0] sb_w_data,    // input data to port 1
-    // Read port 1 (4bit pixel value)
-    input logic sb_r0_en,
-    input logic [SPRITE_ADDR_SIZE:0] sb_r0_addr,
-    output logic [3:0] sb_r0_data,
-    // Read port 2 (4bit pixel value)
-    input logic sb_r1_en,
-    input logic [SPRITE_ADDR_SIZE:0] sb_r1_addr,
-    output logic [3:0] sb_r1_data
+module spi_store_write_controller(
+    input wire clock,
+    input wire reset,
+    input wire [7:0] command,
+    input wire [7:0] data,
+    input wire [15:0] data_index,
+    input wire data_read,
+    output logic [$clog2(SPRITE_NUM)-1:0] w_select,
+    output logic w_en,
+    output logic [SPRITE_ADDR_SIZE:0] w_addr, // NB: addresses 4-bits, not bytes
+    output logic [7:0] w_data
     );
+    assign w_data = data;
 
-    // initialize ram
-    logic [3:0] ram [SPRITE_SIZE-1:0];
-   
-    initial begin
-        // give it start data
-        $readmemb(INIT_F, ram);
-    end
-
-    always @(posedge clock) begin
-        // Write
-        if (sb_w_en) begin
-            ram[sb_w_addr] <= sb_w_data[7:4];
-            ram[sb_w_addr+1] <= sb_w_data[3:0];
-        end
-        // Read port 0
-        if (sb_r0_en) begin
-            sb_r0_data <= ram[sb_r0_addr];
-        end
-        // Read port 1
-        if (sb_r1_en) begin
-            sb_r1_data <= ram[sb_r1_addr];
+    always_ff @(posedge clock) begin
+        if (reset) begin
+            w_en <= 0;
+        end else if (data_read) begin
+            if (command == COMMAND_SAVE_SPRITE) begin
+                if (data_index == 0) begin
+                    w_select <= data;
+                    w_en <= 0;
+                    w_addr <= 0;
+                end else begin
+                    w_en <= 1;
+                    w_addr <= (data_index - 1) << 1;
+                end
+            end
         end
     end
 endmodule

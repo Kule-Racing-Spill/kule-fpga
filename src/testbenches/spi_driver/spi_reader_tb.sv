@@ -3,7 +3,7 @@
 module spi_reader_tb();
     
 reg cs, sclk, sclk_enable, mosi;
-wire miso;
+//wire miso;
 wire [7:0] data_out;
 
 // Instantiate the SPI reader module
@@ -11,7 +11,7 @@ spi_reader reader(
     .cs(cs),
     .sck(sclk),
     .mosi(mosi),
-    .miso(miso),
+//    .miso(miso),
     .command(data_out)
 );
 
