@@ -19,22 +19,10 @@ module sprite_queue(
     logic [15:0] sprite_y_queue [QUEUE_SIZE-1:0];
     logic [7:0] sprite_scale_queue [QUEUE_SIZE-1:0];
     
-    logic [$clog2(QUEUE_SIZE)-1:0] queue_size = 2;
+    logic [$clog2(QUEUE_SIZE)-1:0] queue_size = 0;
     logic [2:0] read_index = 0;
     
     logic old_dequeue, old_data_clk;
-    
-    initial begin
-        sprite_id_queue[0] = 8'b00000000;
-        sprite_x_queue[0] = 200;
-        sprite_y_queue[0] = 200;
-        sprite_scale_queue[0] = 8'b00000000;
-
-        sprite_id_queue[1] = 8'b00000001;
-        sprite_x_queue[1] = 300;
-        sprite_y_queue[1] = 300;
-        sprite_scale_queue[1] = 8'b00000001;
-    end
 
     assign is_empty = (queue_size == 0) ? 1 : 0;
     assign sprite_id = sprite_id_queue[0];
