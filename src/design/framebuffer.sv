@@ -82,7 +82,7 @@ module framebuffer_master(
 
     logic old_vsync;
     logic read_pick = 0;
-    logic framerate_transformer = 0;
+    logic [4:0] framerate_transformer = 0;
     
     // reset signals
     logic fb_reset_finished, fb_reset_enable;
@@ -107,7 +107,7 @@ module framebuffer_master(
     always_ff @(posedge clock) begin
         if (old_vsync != vsync && ~vsync) begin
             // switch buffers
-            if (framerate_transformer == 1) begin
+            if (framerate_transformer == 8) begin
                 framerate_transformer <= 0;
                 read_pick <= ~read_pick;
                 fb_resetting <= 1;

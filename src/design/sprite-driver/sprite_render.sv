@@ -65,6 +65,7 @@ module sprite_render #(
         if (enable && !finish) begin
             drawing <= 1;
             if (max_count_x == 0 || max_count_y == 0) drawing <= 0;
+            if (addr >= FRAMEBUFFER_SIZE) drawing <= 0;
             if (writing_x == sprite_scale - 1) begin
                 reading_x <= 0;
                 writing_x <= 0;
