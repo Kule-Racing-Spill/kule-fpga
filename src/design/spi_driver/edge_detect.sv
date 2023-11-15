@@ -4,12 +4,14 @@ module posedge_detect (
     output logic detected_edge
 );
     logic prev_signal;
+    logic current_signal;
 
     always_ff @(posedge clock) begin
-        prev_signal <= signal;
+        prev_signal <= current_signal;
+        current_signal <= signal;
     end
 
-    assign detected_edge = signal & ~prev_signal;
+    assign detected_edge = current_signal & ~prev_signal;
 endmodule
 
 
@@ -19,10 +21,12 @@ module negedge_detect (
     output logic detected_edge
 );
     logic prev_signal;
+    logic current_signal;
 
     always_ff @(posedge clock) begin
-        prev_signal <= signal;
+        prev_signal <= current_signal;
+        current_signal <= signal;
     end
 
-    assign detected_edge = ~signal & prev_signal;
+    assign detected_edge = ~current_signal & prev_signal;
 endmodule
