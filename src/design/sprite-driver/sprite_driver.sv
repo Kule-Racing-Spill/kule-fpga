@@ -69,19 +69,22 @@ module sprite_driver(
     );
     
     logic [9:0] spr1x = 0, spr2x = 100;
+    logic [7:0] scaling = 8'b00000001;
     
     always_ff @(posedge fb_resetting) begin
         spr1x <= (spr1x + 1) % 800;
         spr2x <= (spr2x + 1) % 800;
+        if (scaling == 8'hff) scaling <= 1;
+        else scaling <= scaling + 1;
     end
     
     sprite_render sr0(
         .clk(clock),
-        .rst(reset || fb_resetting || sprite0_rst),
+        .rst(reset || fb_resetting|| sprite0_rst),
         .enable(sprite0_en),
         .sx(sprite0_x),
         .sy(sprite0_y),
-        .sprite_scale(sprite0_scale),
+        .sprite_scale(scaling),//sprite0_scale),
         .sprite_r_addr(sprite_r0_addr),
         .sprite_r_data(sprite_r0_data),
         .addr(sr0_addr),
