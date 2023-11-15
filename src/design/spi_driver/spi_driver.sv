@@ -4,9 +4,12 @@ module spi_driver(
     input wire spi_miso,                // SPI: Master in / slave out (currently unused)
     input wire spi_clk,                 // SPI: clock
     input wire spi_cs,                  // SPI: chip select
-    input wire sprite_r_en,             // Sprite storage: read enable
-    input wire [SPRITE_ADDR_SIZE:0] sprite_r_addr, // Sprite storage: Address to read from
-    output logic [3:0] sprite_r_data,   // Sprite storage: The read data
+    input wire [$clog2(SPRITE_NUM)-1:0] sprite_r0_select,
+    input wire [SPRITE_ADDR_SIZE:0] sprite_r0_addr, // Sprite storage: Address to read from
+    output logic [3:0] sprite_r0_data,   // Sprite storage: The read data
+    input wire [$clog2(SPRITE_NUM)-1:0] sprite_r1_select,
+    input wire [SPRITE_ADDR_SIZE:0] sprite_r1_addr, // Sprite storage: Address to read from
+    output logic [3:0] sprite_r1_data,   // Sprite storage: The read data
     input wire dequeue,                 // Sprite write queue: dequeue (removes the first element at posedge)
     output logic is_empty,              // Sprite write queue: Is sprite queue empty?
     output logic [7:0] sprite_id,       // Sprite write queue: First sprite id
@@ -21,39 +24,33 @@ module spi_driver(
     );
     
     // Sprite storage module
-    logic [$clog2(SPRITE_NUM)-1:0] sprite_select;
+    logic [$clog2(SPRITE_NUM)-1:0] sprite_w_select;
     logic sprite_w_en;
     logic [SPRITE_ADDR_SIZE:0] sprite_w_addr;
     logic [7:0] sprite_w_data;
-    logic sprite_r_en;
-    logic [SPRITE_ADDR_SIZE:0] sprite_r_addr;
-    logic [3:0] sprite_r_data;  
     
     sprite_storage storage (
-        clock,
-        sprite_select,
-        sprite_w_en,
-        sprite_w_addr,
-        sprite_w_data,
-        sprite_r_en,
-        sprite_r_addr,
-        sprite_r_data
+        .clock,
+        .w_select(sprite_w_select),
+        .w_en(sprite_w_en),
+        .w_addr(sprite_w_addr),
+        .w_data(sprite_w_data),
+        .r0_select(sprite_r0_select),
+        .r0_addr(sprite_r0_addr),
+        .r0_data(sprite_r0_data),
+        .r1_select(sprite_r1_select),
+        .r1_addr(sprite_r1_addr),
+        .r1_data(sprite_r1_data)
     );
     
     // Draw queue module
     logic spi_data_clock;
     logic enqueue_en;
-    assign enqueue_en = command == 8'b00000001;
     logic [7:0] spi_data;
     
-    logic is_empty;
-    logic [7:0] sprite_id;
-    logic [15:0] sprite_x;
-    logic [15:0] sprite_y;
-    logic [7:0] sprite_scale;
-    
     sprite_queue draw_queue(
-        .clock(spi_data_clock),
+        .clock(clock),
+        .data_clk(spi_data_clock),
         .enqueue_en,
         .enqueue_data(spi_data),
         .dequeue,
@@ -66,6 +63,8 @@ module spi_driver(
     
     // SPI reader module
     logic[7:0] command;
+    assign enqueue_en = command == 8'b00000001;
+
     spi_reader reader(
         clock,
         spi_cs,

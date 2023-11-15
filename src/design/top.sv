@@ -23,12 +23,33 @@ module top (
     input logic spi_cs,
     input logic spi_clk,
     input logic spi_mosi,
-    input logic spi_miso
+    output logic spi_miso,
+    output logic fb_reset
 );
+
+    // for now, pin reset to low
+    logic reset = 0;
+
+    // clock and lock signal for clocking wizard
+    wire logic pixel_clk;
+    logic locked;
+            
+    // generate pixel clock
+    pixel_clock_wiz pix_clock(
+        .clk_in(clock),
+        .clk_out(pixel_clk),
+        .locked(locked),
+        .reset(reset)
+    );
+    
     // Sprite memory interface
-    logic sprite_r_en;
-    logic [SPRITE_ADDR_SIZE:0] sprite_r_addr;
-    logic [3:0] sprite_r_data;
+    logic [$clog2(SPRITE_NUM)-1:0] sprite_r0_select;
+    logic [SPRITE_ADDR_SIZE:0] sprite_r0_addr;
+    logic [3:0] sprite_r0_data;
+
+    logic [$clog2(SPRITE_NUM)-1:0] sprite_r1_select;
+    logic [SPRITE_ADDR_SIZE:0] sprite_r1_addr;
+    logic [3:0] sprite_r1_data;
 
     // Sprite draw queue interface
     logic sprite_queue_dequeue;
@@ -40,14 +61,17 @@ module top (
 
     // SPI reader module
     spi_driver spi(
-        .clock,
+        .clock(pixel_clk),
         .spi_mosi,
         .spi_miso,
         .spi_clk,
         .spi_cs,
-        .sprite_r_en,
-        .sprite_r_addr,
-        .sprite_r_data,
+        .sprite_r0_select,
+        .sprite_r0_addr,
+        .sprite_r0_data,
+        .sprite_r1_select,
+        .sprite_r1_addr,
+        .sprite_r1_data,
         .dequeue(sprite_queue_dequeue),
         .is_empty(sprite_queue_is_empty),
         .sprite_id(sprite_queue_sprite_id),
@@ -56,8 +80,6 @@ module top (
         .sprite_scale(sprite_queue_sprite_scale)
     );
     
-    // for now, pin reset to low
-    logic reset = 0;
     
     // VGA takes the most time to draw active pixels, therefore
     // the global vsync should follow this
@@ -73,23 +95,13 @@ module top (
     wire logic wr1_en; 
     wire logic wr2_en;
     
-    // clock and lock signal for clocking wizard
-    wire logic pixel_clk;
-    logic locked;
-            
-    // generate pixel clock
-    pixel_clock_wiz pix_clock(
-        .clk_in(clock),
-        .clk_out(pixel_clk),
-        .locked(locked),
-        .reset(reset)
-    );
-    
     // framebuffer reset
     logic fb_resetting;
     
     // color index for vga and lcd
     logic [3:0] data_vga, data_lcd;
+    
+    assign fb_reset = fb_resetting;
     
     // initiate framebuffers
     framebuffer_master fb_master(
@@ -132,15 +144,27 @@ module top (
     
 
     sprite_driver spr_driver(
-        pixel_clk,
-        !locked,
-        addr_wr1,
-        data_wr1,
-        wr1_en,
-        addr_wr2,
-        data_wr2,
-        wr2_en,
-        fb_resetting
+        .clock(pixel_clk),
+        .reset(!locked),
+        .wr1_addr(addr_wr1),
+        .wr1_data(data_wr1),
+        .wr1_en,
+        .wr2_addr(addr_wr2),
+        .wr2_data(data_wr2),
+        .wr2_en,
+        .fb_resetting,
+        .sprite_r0_select,
+        .sprite_r0_addr,
+        .sprite_r0_data,
+        .sprite_r1_select,
+        .sprite_r1_addr,
+        .sprite_r1_data,
+        .sprite_queue_dequeue,
+        .sprite_queue_is_empty,
+        .sprite_queue_sprite_id,
+        .sprite_queue_sprite_x,
+        .sprite_queue_sprite_y,
+        .sprite_queue_sprite_scale
     );
 
 endmodule

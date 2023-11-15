@@ -47,10 +47,10 @@ module framebuffer_reset(
     always_comb begin
         wr1_en <= enable;
         wr2_en <= enable;
-        addr_wr1 <= (FRAMEBUFFER_SIZE > 192000) ? counter : counter / 2;
-        addr_wr2 <= (FRAMEBUFFER_SIZE > 192000) ? counter : (counter + 1) / 2;
-        data_wr1 <= (counter >= FRAMEBUFFER_SIZE / 2) ? 4'b0001 : 4'b0000;
-        data_wr2 <= (counter + 1 >= FRAMEBUFFER_SIZE / 2) ? 4'b0001 : 4'b0000;
+        addr_wr1 <= counter;
+        addr_wr2 <= counter + 1;
+        data_wr1 <= (counter >= FRAMEBUFFER_SIZE / 4) ? 4'b1011 : 4'b0101;
+        data_wr2 <= (counter + 1 >= FRAMEBUFFER_SIZE / 4) ? 4'b1011 : 4'b0101;
         finished <= finished_internal;
     end
 endmodule
@@ -82,6 +82,7 @@ module framebuffer_master(
 
     logic old_vsync;
     logic read_pick = 0;
+    logic framerate_transformer = 0;
     
     // reset signals
     logic fb_reset_finished, fb_reset_enable;
@@ -106,9 +107,12 @@ module framebuffer_master(
     always_ff @(posedge clock) begin
         if (old_vsync != vsync && ~vsync) begin
             // switch buffers
-            read_pick <= ~read_pick;
-            fb_resetting <= 1;
-            fb_reset_enable <= 1;
+            if (framerate_transformer == 1) begin
+                framerate_transformer <= 0;
+                read_pick <= ~read_pick;
+                fb_resetting <= 1;
+                fb_reset_enable <= 1;
+            end else framerate_transformer <= framerate_transformer + 1;
         end
         // set old_vsync to current vsync so we dont flip read_pick all the time when vsync is low
         old_vsync <= vsync;

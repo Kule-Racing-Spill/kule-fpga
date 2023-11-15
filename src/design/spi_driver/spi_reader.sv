@@ -58,12 +58,13 @@ module spi_command_parser (
     output logic[SPRITE_ADDR_SIZE:0] sprite_w_addr,
     output logic[7:0] sprite_w_data
 );
-    logic[15:0] data_count;
-    logic[15:0] data_index;
+    logic[15:0] data_count = 0;
+    logic[15:0] data_index = 0;
     
     logic[SPRITE_ADDR_SIZE:0] sprite_address;
     logic sprite_write;
-
+    logic old_data_clk;
+    
     initial begin
         data_count = 0;
         data_index = 0;
@@ -83,48 +84,51 @@ module spi_command_parser (
         end else begin
             sprite_w_en <= 0;
         end
-    end
-
-    always @(negedge data_clk or negedge enable) begin
+        
         if (!enable) begin
             data_count <= 0;
             data_index <= 0;
-        end else if (data_count == data_index) begin
-            command <= data;
-            data_index <= 0;
-            case(data)
-                COMMAND_SAVE_SPRITE: begin
-                    // send sprite command
-                    // 1(spriteid) + 512(pixel values) bytes of data
-                    data_count <= 513;
-                end
-                COMMAND_DRAW_SPRITE: begin
-                    // draw sprite command
-                    data_count <= 6;
-                end
-
-                default begin
-                    // unknown command
-                    data_count <= 0; // just ignore and use next byte as command
-                end
-            endcase
-        end else begin
-            case(command)
-                COMMAND_SAVE_SPRITE: begin
-                    // parse "send sprite" command
-                    if (data_index == 0) begin
-                        sprite_select <= data;
-                        sprite_address <= 0;
-                    end else begin
-                        // Signal to write another byte
-                        sprite_write <= 1;
-                    end
-                end
-            endcase
-
-
-            data_index <= data_index + 1;
         end
+        
+        if (data_clk != old_data_clk && !data_clk) begin
+            if (enable && data_count == data_index) begin
+                command <= data;
+                data_index <= 0;
+                case(data)
+                    COMMAND_SAVE_SPRITE: begin
+                        // send sprite command
+                        // 1(spriteid) + 512(pixel values) bytes of data
+                        data_count <= 513;
+                    end
+                    COMMAND_DRAW_SPRITE: begin
+                        // draw sprite command
+                        data_count <= 6;
+                    end
+    
+                    default begin
+                        // unknown command
+                        data_count <= 0; // just ignore and use next byte as command
+                    end
+                endcase
+            end else begin
+                case(command)
+                    COMMAND_SAVE_SPRITE: begin
+                        // parse "send sprite" command
+                        if (data_index == 0) begin
+                            sprite_select <= data;
+                            sprite_address <= 0;
+                        end else begin
+                            // Signal to write another byte
+                            sprite_write <= 1;
+                        end
+                    end
+                endcase
+    
+    
+                data_index <= data_index + 1;
+            end
+        end
+        old_data_clk <= data_clk;
     end
 endmodule
 
