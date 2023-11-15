@@ -58,8 +58,8 @@ module spi_store_write_controller(
     output logic [$clog2(SPRITE_NUM)-1:0] w_select,
     output logic w_en,
     output logic [SPRITE_ADDR_SIZE:0] w_addr, // NB: addresses 4-bits, not bytes
-    output logic [7:0] w_data,
-);
+    output logic [7:0] w_data
+    );
     assign w_data = data;
 
     always_ff @(posedge clock) begin

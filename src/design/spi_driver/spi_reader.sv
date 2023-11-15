@@ -21,10 +21,10 @@ module spi_byte_reader (
             read_index <= 0;
         end else begin
             // send read byte to output data
-            if (read_index == 0 && ~initial_byte) begin
+            if (read_index == 0 && ~initial_bit) begin
                 data <= read_buffer;
-                byte_clk <= 1;
-            end else byte_clk <= 0;
+                byte_read <= 1;
+            end else byte_read <= 0;
 
             // read next bit
             if (sck_posedge) begin
@@ -47,8 +47,8 @@ module spi_command_parser (
     input wire  byte_read,
     input logic[7:0] data,
     output logic[7:0] command,
-    output logic[15:0] data_index,
-);
+    output logic[15:0] data_index
+    );
     logic[15:0] data_count = 0; // number of bytes to read for the current command
     initial data_index = 0;
 
@@ -95,8 +95,8 @@ module spi_reader (
     output logic[7:0] command,
     output logic[7:0] data,
     output logic[15:0] data_index,
-    output logic byte_read,
-);
+    output logic byte_read
+    );
     spi_byte_reader sbr(
         .clock,
         .reset(cs),
