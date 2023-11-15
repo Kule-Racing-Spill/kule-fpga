@@ -66,17 +66,27 @@ module spi_driver(
     assign enqueue_en = command == 8'b00000001;
 
     spi_reader reader(
-        clock,
-        spi_cs,
-        spi_clk_bufg,
-        spi_mosi,
-        spi_miso,
-        command,
-        spi_data,
-        spi_data_clock,
-        sprite_select,
-        sprite_w_en,
-        sprite_w_addr,
-        sprite_w_data
+        .clock,
+        .cs(spi_cs),
+        .sck(spi_clk_bufg),
+        .mosi(spi_mosi),
+//        .miso(spi_miso),
+        .command,
+        .data(spi_data),
+        .data_index(spi_data_index),
+        .byte_read(spi_data_clock)
+    );
+
+    spi_store_write_controller sswc(
+        .clock,
+        .reset(spi_en),
+        .command,
+        .data(spi_data),
+        .data_index(spi_data_index),
+        .data_read(spi_data_clock),
+        .w_select(sprite_w_select),
+        .w_en(sprite_w_en),
+        .w_addr(sprite_w_addr),
+        .w_data(sprite_w_data)
     );
 endmodule
