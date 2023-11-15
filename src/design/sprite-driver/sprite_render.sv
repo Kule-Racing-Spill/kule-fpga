@@ -23,7 +23,7 @@ module sprite_render #(
     logic finish;
     
     logic [CORDW-1:0] writing_x, writing_y = 0;
-    logic [2:0] count_x, count_y = 0;
+    logic [7:0] count_x, count_y = 0;
     logic [((SPR_WIDTH > SPR_HEIGHT) ? $clog2(SPR_WIDTH) : $clog2(SPR_HEIGHT)):0] reading_x, reading_y;
     
     assign sprite_r_addr = reading_x + reading_y * SPR_WIDTH;
@@ -49,45 +49,46 @@ module sprite_render #(
     always_comb begin
         max_count_x <= sprite_scale[7:4]
             + (sprite_scale[3] && reading_x[0] ? 1 : 0)
-            + (sprite_scale[2] && reading_x[1:0] & 2'b11 ? 1 : 0)
-            + (sprite_scale[1] && reading_x[2:0] & 3'b111 ? 1 : 0)
-            + (sprite_scale[0] && reading_x[3:0] & 4'b1111 ? 1 : 0);
+            + (sprite_scale[2] && reading_x[1:0] == 2'b11 ? 1 : 0)
+            + (sprite_scale[1] && reading_x[2:0] == 3'b111 ? 1 : 0)
+            + (sprite_scale[0] && reading_x[3:0] == 4'b1111 ? 1 : 0);
         
         max_count_y <= sprite_scale[7:4]
             + (sprite_scale[3] && reading_y[0] ? 1 : 0)
-            + (sprite_scale[2] && reading_y[1:0] & 2'b11 ? 1 : 0)
-            + (sprite_scale[1] && reading_y[2:0] & 3'b111 ? 1 : 0)
-            + (sprite_scale[0] && reading_y[3:0] & 4'b1111 ? 1 : 0);
+            + (sprite_scale[2] && reading_y[1:0] == 2'b11 ? 1 : 0)
+            + (sprite_scale[1] && reading_y[2:0] == 3'b111 ? 1 : 0)
+            + (sprite_scale[0] && reading_y[3:0] == 4'b1111 ? 1 : 0);  
     end
     
     
     always_ff @(posedge clk) begin
         if (enable && !finish) begin
             drawing <= 1;
+            if (max_count_x == 0 || max_count_y == 0) drawing <= 0;
             if (writing_x == sprite_scale - 1) begin
                 reading_x <= 0;
                 writing_x <= 0;
-                count_x <= 0;
+                count_x <= 1;
                 
                 if (writing_y == sprite_scale - 1) begin
                     finish <= 1;
                     reading_y <= 0;
                     writing_y <= 0;
-                    count_y <= 0;
+                    count_y <= 1;
                 end else begin
                     writing_y <= writing_y + 1;
-                    if (count_y == max_count_y) begin
+                    if (count_y >= max_count_y) begin
                         reading_y <= reading_y + 1;
-                        count_y <= 0;
+                        count_y <= 1;
                     end else begin
                         count_y <= count_y + 1;
                     end
                 end
             end else begin
                 writing_x <= writing_x + 1;
-                if (count_x == max_count_x) begin
+                if (count_x >= max_count_x) begin
                     reading_x <= reading_x + 1;
-                    count_x <= 0;
+                    count_x <= 1;
                 end else begin
                     count_x <= count_x + 1;
                 end
@@ -103,8 +104,8 @@ module sprite_render #(
             reading_x <= 0;
             reading_y <= 0;
             drawing <= 0;
-            count_x <= 0;
-            count_y <= 0;
+            count_x <= 1;
+            count_y <= 1;
             writing_x <= 0;
             writing_y <= 0;
             finish <= 0;
