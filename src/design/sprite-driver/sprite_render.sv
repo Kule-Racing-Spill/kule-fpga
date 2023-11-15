@@ -20,7 +20,7 @@ module sprite_render #(
     output      logic finished
     );
     
-    logic finish;
+    logic finish, outside_bounding_box;
     
     logic [CORDW-1:0] writing_x, writing_y = 0;
     logic [7:0] count_x, count_y = 0;
@@ -29,6 +29,8 @@ module sprite_render #(
     assign sprite_r_addr = reading_x + reading_y * SPR_WIDTH;
     assign addr = (FRAMEBUFFER_SIZE > 192000) ? (sx + writing_x) + (sy + writing_y) * 800 : ((sx + writing_x) + (sy + writing_y) * 800)/2;
     assign finished = finish;
+    
+    assign outside_bounding_box = ((sx + writing_x) < 800) && ((sy + writing_y) < 480);
     
     /*
     Scaling byte
@@ -65,7 +67,7 @@ module sprite_render #(
         if (enable && !finish) begin
             drawing <= 1;
             if (max_count_x == 0 || max_count_y == 0) drawing <= 0;
-            if (addr >= FRAMEBUFFER_SIZE) drawing <= 0;
+            if (outside_bounding_box) drawing <= 0;
             if (writing_x == sprite_scale - 1) begin
                 reading_x <= 0;
                 writing_x <= 0;
