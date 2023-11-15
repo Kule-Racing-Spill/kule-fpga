@@ -11,8 +11,8 @@ module spi_byte_reader (
     logic sck_posedge;
     posedge_detect pe_det_sck(clock, sck, sck_posedge);
 
-    logic internal_byte_read:;
-    posedge_detect pe_det_sck(clock, internal_byte_read, byte_read);
+    logic internal_byte_read;
+    posedge_detect pe_det_byte_read(clock, internal_byte_read, byte_read);
 
     logic initial_bit = 1;
     logic[2:0] read_index = 0;
