@@ -28,7 +28,7 @@ module spi_byte_reader (
 
             // read next bit
             if (sck_posedge) begin
-                read_buffer[read_index] <= mosi;
+                read_buffer[7:0] <= {read_buffer[6:0], mosi};
                 read_index <= read_index + 1; // overflows to reset for next byte
             end
 
