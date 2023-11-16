@@ -30,7 +30,7 @@ module sprite_render #(
     assign addr = (FRAMEBUFFER_SIZE > 192000) ? (sx + writing_x) + (sy + writing_y) * 800 : ((sx + writing_x) + (sy + writing_y) * 800)/2;
     assign finished = finish;
     
-    assign outside_bounding_box = ((sx + writing_x) < 800) && ((sy + writing_y) < 480);
+    assign outside_bounding_box = ((sx + writing_x) >= 800) || ((sy + writing_y) >= 480);
     
     /*
     Scaling byte
