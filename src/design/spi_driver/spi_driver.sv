@@ -22,6 +22,12 @@ module spi_driver(
         .I(spi_clk),   // Input clock
         .O(spi_clk_bufg)   // Buffered clock
     );
+
+    // Reset on cs (buffered)
+    logic reset;
+    always_ff @(posedge clock) begin
+        reset <= cs;
+    end
     
     // Sprite storage module
     logic [$clog2(SPRITE_NUM)-1:0] sprite_w_select;
@@ -67,7 +73,7 @@ module spi_driver(
 
     spi_reader reader(
         .clock,
-        .cs(spi_cs),
+        .reset,
         .sck(spi_clk_bufg),
         .mosi(spi_mosi),
 //        .miso(spi_miso),
@@ -79,7 +85,7 @@ module spi_driver(
 
     spi_store_write_controller sswc(
         .clock,
-        .reset(spi_en),
+        .reset,
         .command,
         .data(spi_data),
         .data_index(spi_data_index),
