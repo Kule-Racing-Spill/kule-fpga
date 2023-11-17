@@ -110,14 +110,14 @@ module sprite_distributor (
     // sprite render 0
     output logic sprite0_en,
     output logic sprite0_rst,
-    output logic [7:0] sprite0_id,
+    output logic [SPRITE_NUM_LOG:0] sprite0_id,
     output logic [15:0] sprite0_x, sprite0_y,
     output logic [7:0] sprite0_scale,
     input logic sprite0_finished,
     // sprite render 1
     output logic sprite1_en,
     output logic sprite1_rst,
-    output logic [7:0] sprite1_id,
+    output logic [SPRITE_NUM_LOG:0] sprite1_id,
     output logic [15:0] sprite1_x, sprite1_y,
     output logic [7:0] sprite1_scale,
     input logic sprite1_finished

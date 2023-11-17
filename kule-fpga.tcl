@@ -41,6 +41,7 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/src/ips/framebuffer_bram/framebuffer_bram.xci"]"\
  "[file normalize "$origin_dir/src/ips/sprite_bram/sprite_bram.xci"]"\
  "[file normalize "$origin_dir/src/data/sprite.coe"]"\
+ "[file normalize "$origin_dir/src/design/spi_driver/edge_detect.sv"]"\
  "[file normalize "$origin_dir/src/constraints/7a100t.xdc"]"\
  "[file normalize "$origin_dir/src/testbenches/spi_driver/sprite_orchestrator_tb.sv"]"\
  "[file normalize "$origin_dir/src/testbenches/spi_driver/sprite_storage_tb.sv"]"\
@@ -212,6 +213,7 @@ set files [list \
  [file normalize "${origin_dir}/src/ips/framebuffer_bram/framebuffer_bram.xci"] \
  [file normalize "${origin_dir}/src/ips/sprite_bram/sprite_bram.xci"] \
  [file normalize "${origin_dir}/src/data/sprite.coe"] \
+ [file normalize "${origin_dir}/src/design/spi_driver/edge_detect.sv"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -332,6 +334,11 @@ set_property -name "registered_with_manager" -value "1" -objects $file_obj
 if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
 }
+
+set file "$origin_dir/src/design/spi_driver/edge_detect.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
 
 # Set 'sources_1' fileset file properties for local files

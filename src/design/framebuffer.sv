@@ -7,10 +7,10 @@ module framebuffer_reset(
     input logic enable,
     output logic finished,
     // ports
-    output logic [18:0] addr_wr1,
+    output logic [FRAMEBUFFER_ADDR_SIZE:0] addr_wr1,
     output logic [3:0] data_wr1,
     output logic wr1_en,
-    output logic [18:0] addr_wr2,
+    output logic [FRAMEBUFFER_ADDR_SIZE:0] addr_wr2,
     output logic [3:0] data_wr2,
     output logic wr2_en
     );
@@ -61,16 +61,16 @@ module framebuffer_master(
     input wire logic vsync,
     
     // READ VGA
-    input wire [18:0] addr_vga,
+    input wire [FRAMEBUFFER_ADDR_SIZE:0] addr_vga,
     output logic [3:0] data_vga,
     
     // READ LCD
-    input wire [18:0] addr_lcd,
+    input wire [FRAMEBUFFER_ADDR_SIZE:0] addr_lcd,
     output logic [3:0] data_lcd,
     
     // write
-    input wire [18:0] addr_wr1,
-    input wire [18:0] addr_wr2,
+    input wire [FRAMEBUFFER_ADDR_SIZE:0] addr_wr1,
+    input wire [FRAMEBUFFER_ADDR_SIZE:0] addr_wr2,
     input wire [3:0] data_wr1,
     input wire [3:0] data_wr2,
     input wire wr1_en,
@@ -87,14 +87,14 @@ module framebuffer_master(
     // reset signals
     logic fb_reset_finished, fb_reset_enable;
     // reset busses
-    logic [18:0] fb_reset_addr1, fb_reset_addr2;
+    logic [FRAMEBUFFER_ADDR_SIZE:0] fb_reset_addr1, fb_reset_addr2;
     logic [3:0] fb_reset_data1, fb_reset_data2;
     logic fb_reset_wr1, fb_reset_wr2;
 
     // write signals
     logic fb0_wr1_en, fb0_wr2_en, fb1_wr1_en, fb1_wr2_en;
     // address busses
-    logic [18:0] fb0_addr1, fb0_addr2, fb1_addr1, fb1_addr2;
+    logic [FRAMEBUFFER_ADDR_SIZE:0] fb0_addr1, fb0_addr2, fb1_addr1, fb1_addr2;
     // input data busses
     logic [3:0] fb0_dataw1, fb0_dataw2, fb1_dataw1, fb1_dataw2;
     // output data busses
@@ -231,13 +231,13 @@ module framebuffer_master(
     
     framebuffer_bram fb0(
         // PORT A
-        .addra(fb0_addr1[17:0]),
+        .addra(fb0_addr1),
         .clka(clock),
         .dina(fb0_dataw1),
         .douta(fb0_datar1),
         .wea(fb0_wr1_en),
         //PORT B
-        .addrb(fb0_addr2[17:0]),
+        .addrb(fb0_addr2),
         .clkb(clock),
         .dinb(fb0_dataw2),
         .doutb(fb0_datar2),
@@ -246,13 +246,13 @@ module framebuffer_master(
     
     framebuffer_bram fb1(
         // PORT A
-        .addra(fb1_addr1[17:0]),
+        .addra(fb1_addr1),
         .clka(clock),
         .dina(fb1_dataw1),
         .douta(fb1_datar1),
         .wea(fb1_wr1_en),
         //PORT B
-        .addrb(fb1_addr2[17:0]),
+        .addrb(fb1_addr2),
         .clkb(clock),
         .dinb(fb1_dataw2),
         .doutb(fb1_datar2),

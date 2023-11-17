@@ -70,6 +70,7 @@ module spi_driver(
     // SPI reader module
     logic[7:0] command;
     assign enqueue_en = command == 8'b00000001;
+    logic [15:0] spi_data_index;
 
     spi_reader reader(
         .clock,
