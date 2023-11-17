@@ -14,11 +14,14 @@ module spi_byte_reader (
     logic internal_byte_read;
     posedge_detect pe_det_byte_read(clock, internal_byte_read, byte_read);
 
+    logic mosi_buf;
+
     logic initial_bit = 1;
     logic[2:0] read_index = 0;
     logic[7:0] read_buffer = 0;
 
     always_ff @(posedge clock) begin
+        mosi_buf <= mosi;
         if(reset) begin
             initial_bit <= 1;
             read_index <= 0;
@@ -31,7 +34,7 @@ module spi_byte_reader (
 
             // read next bit
             if (sck_posedge) begin
-                read_buffer[7:0] <= {read_buffer[6:0], mosi};
+                read_buffer[7:0] <= {read_buffer[6:0], mosi_buf};
                 read_index <= read_index + 1; // overflows to reset for next byte
             end
 
@@ -90,7 +93,7 @@ endmodule
 
 module spi_reader (
     input wire clock,
-    input wire cs,
+    input wire reset,
     input wire sck,
     input wire mosi,
 //    output logic miso,
@@ -101,7 +104,7 @@ module spi_reader (
     );
     spi_byte_reader sbr(
         .clock,
-        .reset(cs),
+        .reset,
         .sck,
         .mosi,
         .byte_read,
@@ -110,7 +113,7 @@ module spi_reader (
 
     spi_command_parser scp(
         .clock,
-        .reset(cs),
+        .reset,
         .byte_read,
         .data,
         .command,
