@@ -26,7 +26,7 @@ module spi_driver(
     // Reset on cs (buffered)
     logic reset;
     always_ff @(posedge clock) begin
-        reset <= cs;
+        reset <= spi_cs;
     end
     
     // Sprite storage module

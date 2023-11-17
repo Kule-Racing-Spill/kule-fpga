@@ -44,6 +44,7 @@ module framebuffer_reset(
         end
     end
     
+    logic [3:0] i;
     always_comb begin
         wr1_en <= enable;
         wr2_en <= enable;

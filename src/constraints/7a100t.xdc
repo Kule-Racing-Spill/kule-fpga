@@ -62,89 +62,128 @@
 #set_property -dict { PACKAGE_PIN T15    IOSTANDARD LVCMOS33 } [get_ports { pin_NetNU4ANIO_L10N_T1_D15_14 }];
 
 ### Clock signal ###
-set_property -dict { PACKAGE_PIN N11    IOSTANDARD LVCMOS33 } [get_ports { clock }];
-create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports { clock }]; 
+set_property -dict {PACKAGE_PIN N11 IOSTANDARD LVCMOS33} [get_ports clock]
+create_clock -period 10.000 -name sys_clk_pin -waveform {0.000 5.000} -add [get_ports clock]
 
 ### VGA ###
 
 # VGA red
-set_property -dict { PACKAGE_PIN L5    IOSTANDARD LVCMOS33 } [get_ports { vga_red[4] }];
-set_property -dict { PACKAGE_PIN L4    IOSTANDARD LVCMOS33 } [get_ports { vga_red[3] }];
-set_property -dict { PACKAGE_PIN M4    IOSTANDARD LVCMOS33 } [get_ports { vga_red[2] }];
-set_property -dict { PACKAGE_PIN M2    IOSTANDARD LVCMOS33 } [get_ports { vga_red[1] }];
-set_property -dict { PACKAGE_PIN M1    IOSTANDARD LVCMOS33 } [get_ports { vga_red[0] }];
+set_property -dict {PACKAGE_PIN L5 IOSTANDARD LVCMOS33} [get_ports {vga_red[4]}]
+set_property -dict {PACKAGE_PIN L4 IOSTANDARD LVCMOS33} [get_ports {vga_red[3]}]
+set_property -dict {PACKAGE_PIN M4 IOSTANDARD LVCMOS33} [get_ports {vga_red[2]}]
+set_property -dict {PACKAGE_PIN M2 IOSTANDARD LVCMOS33} [get_ports {vga_red[1]}]
+set_property -dict {PACKAGE_PIN M1 IOSTANDARD LVCMOS33} [get_ports {vga_red[0]}]
 
 # VGA green
-set_property -dict { PACKAGE_PIN N3    IOSTANDARD LVCMOS33 } [get_ports { vga_green[4] }];
-set_property -dict { PACKAGE_PIN N2    IOSTANDARD LVCMOS33 } [get_ports { vga_green[3] }];
-set_property -dict { PACKAGE_PIN N1    IOSTANDARD LVCMOS33 } [get_ports { vga_green[2] }];
-set_property -dict { PACKAGE_PIN P1    IOSTANDARD LVCMOS33 } [get_ports { vga_green[1] }];
-set_property -dict { PACKAGE_PIN P4    IOSTANDARD LVCMOS33 } [get_ports { vga_green[0] }];
+set_property -dict {PACKAGE_PIN N3 IOSTANDARD LVCMOS33} [get_ports {vga_green[4]}]
+set_property -dict {PACKAGE_PIN N2 IOSTANDARD LVCMOS33} [get_ports {vga_green[3]}]
+set_property -dict {PACKAGE_PIN N1 IOSTANDARD LVCMOS33} [get_ports {vga_green[2]}]
+set_property -dict {PACKAGE_PIN P1 IOSTANDARD LVCMOS33} [get_ports {vga_green[1]}]
+set_property -dict {PACKAGE_PIN P4 IOSTANDARD LVCMOS33} [get_ports {vga_green[0]}]
 
 # VGA blue
-set_property -dict { PACKAGE_PIN P3    IOSTANDARD LVCMOS33 } [get_ports { vga_blue[4] }];
-set_property -dict { PACKAGE_PIN M5    IOSTANDARD LVCMOS33 } [get_ports { vga_blue[3] }];
-set_property -dict { PACKAGE_PIN N4    IOSTANDARD LVCMOS33 } [get_ports { vga_blue[2] }];
-set_property -dict { PACKAGE_PIN R2    IOSTANDARD LVCMOS33 } [get_ports { vga_blue[1] }];
-set_property -dict { PACKAGE_PIN R1    IOSTANDARD LVCMOS33 } [get_ports { vga_blue[0] }];
+set_property -dict {PACKAGE_PIN P3 IOSTANDARD LVCMOS33} [get_ports {vga_blue[4]}]
+set_property -dict {PACKAGE_PIN M5 IOSTANDARD LVCMOS33} [get_ports {vga_blue[3]}]
+set_property -dict {PACKAGE_PIN N4 IOSTANDARD LVCMOS33} [get_ports {vga_blue[2]}]
+set_property -dict {PACKAGE_PIN R2 IOSTANDARD LVCMOS33} [get_ports {vga_blue[1]}]
+set_property -dict {PACKAGE_PIN R1 IOSTANDARD LVCMOS33} [get_ports {vga_blue[0]}]
 
 # VGA syncs
-set_property -dict { PACKAGE_PIN R3    IOSTANDARD LVCMOS33 } [get_ports { vga_vsync }];
-set_property -dict { PACKAGE_PIN T2    IOSTANDARD LVCMOS33 } [get_ports { vga_hsync }];
+set_property -dict {PACKAGE_PIN R3 IOSTANDARD LVCMOS33} [get_ports vga_vsync]
+set_property -dict {PACKAGE_PIN T2 IOSTANDARD LVCMOS33} [get_ports vga_hsync]
 
 
 ### LCD ###
 
 # LCD red
-set_property -dict { PACKAGE_PIN C2    IOSTANDARD LVCMOS33 } [get_ports { lcd_red[0] }];
-set_property -dict { PACKAGE_PIN B2    IOSTANDARD LVCMOS33 } [get_ports { lcd_red[1] }];
-set_property -dict { PACKAGE_PIN A2    IOSTANDARD LVCMOS33 } [get_ports { lcd_red[2] }];
-set_property -dict { PACKAGE_PIN C1    IOSTANDARD LVCMOS33 } [get_ports { lcd_red[3] }];
-set_property -dict { PACKAGE_PIN B1    IOSTANDARD LVCMOS33 } [get_ports { lcd_red[4] }];
-set_property -dict { PACKAGE_PIN E2    IOSTANDARD LVCMOS33 } [get_ports { lcd_red[5] }];
-set_property -dict { PACKAGE_PIN D1    IOSTANDARD LVCMOS33 } [get_ports { lcd_red[6] }];
-set_property -dict { PACKAGE_PIN E3    IOSTANDARD LVCMOS33 } [get_ports { lcd_red[7] }];
+set_property -dict {PACKAGE_PIN C2 IOSTANDARD LVCMOS33} [get_ports {lcd_red[0]}]
+set_property -dict {PACKAGE_PIN B2 IOSTANDARD LVCMOS33} [get_ports {lcd_red[1]}]
+set_property -dict {PACKAGE_PIN A2 IOSTANDARD LVCMOS33} [get_ports {lcd_red[2]}]
+set_property -dict {PACKAGE_PIN C1 IOSTANDARD LVCMOS33} [get_ports {lcd_red[3]}]
+set_property -dict {PACKAGE_PIN B1 IOSTANDARD LVCMOS33} [get_ports {lcd_red[4]}]
+set_property -dict {PACKAGE_PIN E2 IOSTANDARD LVCMOS33} [get_ports {lcd_red[5]}]
+set_property -dict {PACKAGE_PIN D1 IOSTANDARD LVCMOS33} [get_ports {lcd_red[6]}]
+set_property -dict {PACKAGE_PIN E3 IOSTANDARD LVCMOS33} [get_ports {lcd_red[7]}]
 
 # LCD green
-set_property -dict { PACKAGE_PIN D3    IOSTANDARD LVCMOS33 } [get_ports { lcd_green[0] }];
-set_property -dict { PACKAGE_PIN D4    IOSTANDARD LVCMOS33 } [get_ports { lcd_green[1] }];
-set_property -dict { PACKAGE_PIN C4    IOSTANDARD LVCMOS33 } [get_ports { lcd_green[2] }];
-set_property -dict { PACKAGE_PIN F5    IOSTANDARD LVCMOS33 } [get_ports { lcd_green[3] }];
-set_property -dict { PACKAGE_PIN E5    IOSTANDARD LVCMOS33 } [get_ports { lcd_green[4] }];
-set_property -dict { PACKAGE_PIN F4    IOSTANDARD LVCMOS33 } [get_ports { lcd_green[5] }];
-set_property -dict { PACKAGE_PIN F3    IOSTANDARD LVCMOS33 } [get_ports { lcd_green[6] }];
-set_property -dict { PACKAGE_PIN F2    IOSTANDARD LVCMOS33 } [get_ports { lcd_green[7] }];
+set_property -dict {PACKAGE_PIN D3 IOSTANDARD LVCMOS33} [get_ports {lcd_green[0]}]
+set_property -dict {PACKAGE_PIN D4 IOSTANDARD LVCMOS33} [get_ports {lcd_green[1]}]
+set_property -dict {PACKAGE_PIN C4 IOSTANDARD LVCMOS33} [get_ports {lcd_green[2]}]
+set_property -dict {PACKAGE_PIN F5 IOSTANDARD LVCMOS33} [get_ports {lcd_green[3]}]
+set_property -dict {PACKAGE_PIN E5 IOSTANDARD LVCMOS33} [get_ports {lcd_green[4]}]
+set_property -dict {PACKAGE_PIN F4 IOSTANDARD LVCMOS33} [get_ports {lcd_green[5]}]
+set_property -dict {PACKAGE_PIN F3 IOSTANDARD LVCMOS33} [get_ports {lcd_green[6]}]
+set_property -dict {PACKAGE_PIN F2 IOSTANDARD LVCMOS33} [get_ports {lcd_green[7]}]
 
 # LCD blue
-set_property -dict { PACKAGE_PIN E1    IOSTANDARD LVCMOS33 } [get_ports { lcd_blue[0] }];
-set_property -dict { PACKAGE_PIN G5    IOSTANDARD LVCMOS33 } [get_ports { lcd_blue[1] }];
-set_property -dict { PACKAGE_PIN G4    IOSTANDARD LVCMOS33 } [get_ports { lcd_blue[2] }];
-set_property -dict { PACKAGE_PIN G2    IOSTANDARD LVCMOS33 } [get_ports { lcd_blue[3] }];
-set_property -dict { PACKAGE_PIN G1    IOSTANDARD LVCMOS33 } [get_ports { lcd_blue[4] }];
-set_property -dict { PACKAGE_PIN H5    IOSTANDARD LVCMOS33 } [get_ports { lcd_blue[5] }];
-set_property -dict { PACKAGE_PIN H4    IOSTANDARD LVCMOS33 } [get_ports { lcd_blue[6] }];
-set_property -dict { PACKAGE_PIN J5    IOSTANDARD LVCMOS33 } [get_ports { lcd_blue[7] }];
+set_property -dict {PACKAGE_PIN E1 IOSTANDARD LVCMOS33} [get_ports {lcd_blue[0]}]
+set_property -dict {PACKAGE_PIN G5 IOSTANDARD LVCMOS33} [get_ports {lcd_blue[1]}]
+set_property -dict {PACKAGE_PIN G4 IOSTANDARD LVCMOS33} [get_ports {lcd_blue[2]}]
+set_property -dict {PACKAGE_PIN G2 IOSTANDARD LVCMOS33} [get_ports {lcd_blue[3]}]
+set_property -dict {PACKAGE_PIN G1 IOSTANDARD LVCMOS33} [get_ports {lcd_blue[4]}]
+set_property -dict {PACKAGE_PIN H5 IOSTANDARD LVCMOS33} [get_ports {lcd_blue[5]}]
+set_property -dict {PACKAGE_PIN H4 IOSTANDARD LVCMOS33} [get_ports {lcd_blue[6]}]
+set_property -dict {PACKAGE_PIN J5 IOSTANDARD LVCMOS33} [get_ports {lcd_blue[7]}]
 
 # LCD control
 set_property -dict { PACKAGE_PIN H2    IOSTANDARD LVCMOS33 } [get_ports { lcd_dot_clk }];
 set_property -dict { PACKAGE_PIN H1    IOSTANDARD LVCMOS33 } [get_ports { lcd_display }];
 
 # LCD syncs
-set_property -dict { PACKAGE_PIN J3    IOSTANDARD LVCMOS33 } [get_ports { lcd_hsync }];
-set_property -dict { PACKAGE_PIN H3    IOSTANDARD LVCMOS33 } [get_ports { lcd_vsync }];
+set_property -dict {PACKAGE_PIN J3 IOSTANDARD LVCMOS33} [get_ports lcd_hsync]
+set_property -dict {PACKAGE_PIN H3 IOSTANDARD LVCMOS33} [get_ports lcd_vsync]
 
 # LCD data enable
-set_property -dict { PACKAGE_PIN K1    IOSTANDARD LVCMOS33 } [get_ports { lcd_de }];
+set_property -dict {PACKAGE_PIN K1 IOSTANDARD LVCMOS33} [get_ports lcd_de]
 
 
 ### SPI ###
 
-set_property -dict { PACKAGE_PIN C8    IOSTANDARD LVCMOS33 } [get_ports { spi_cs }];
-set_property -dict { PACKAGE_PIN D10   IOSTANDARD LVCMOS33 } [get_ports { spi_clk }];
-set_property -dict { PACKAGE_PIN A8    IOSTANDARD LVCMOS33 } [get_ports { spi_mosi }];
-#set_property -dict { PACKAGE_PIN C9    IOSTANDARD LVCMOS33 } [get_ports { spi_miso }];
+set_property -dict {PACKAGE_PIN C8 IOSTANDARD LVCMOS33} [get_ports spi_cs]
+set_property -dict {PACKAGE_PIN D10 IOSTANDARD LVCMOS33} [get_ports spi_clk]
+set_property -dict {PACKAGE_PIN A8 IOSTANDARD LVCMOS33} [get_ports spi_mosi]
+set_property -dict {PACKAGE_PIN C9 IOSTANDARD LVCMOS33} [get_ports spi_miso]
 
-set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets spi_clk_IBUF];
+set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets spi_clk_IBUF]
 
 ### GPIO ###
-set_property -dict { PACKAGE_PIN A9    IOSTANDARD LVCMOS33 } [get_ports { fb_reset }];
+set_property -dict {PACKAGE_PIN A9 IOSTANDARD LVCMOS33} [get_ports fb_reset]
+
+
+#create_debug_core u_ila_0 ila
+#set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
+#set_property ALL_PROBE_SAME_MU_CNT 1 [get_debug_cores u_ila_0]
+#set_property C_ADV_TRIGGER false [get_debug_cores u_ila_0]
+#set_property C_DATA_DEPTH 32768 [get_debug_cores u_ila_0]
+#set_property C_EN_STRG_QUAL false [get_debug_cores u_ila_0]
+#set_property C_INPUT_PIPE_STAGES 5 [get_debug_cores u_ila_0]
+#set_property C_TRIGIN_EN false [get_debug_cores u_ila_0]
+#set_property C_TRIGOUT_EN false [get_debug_cores u_ila_0]
+#set_property port_width 1 [get_debug_ports u_ila_0/clk]
+#connect_debug_port u_ila_0/clk [get_nets [list pix_clock/inst/clk_out]]
+#set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe0]
+#set_property port_width 8 [get_debug_ports u_ila_0/probe0]
+#connect_debug_port u_ila_0/probe0 [get_nets [list {spi/reader/scp/command[0]} {spi/reader/scp/command[1]} {spi/reader/scp/command[2]} {spi/reader/scp/command[3]} {spi/reader/scp/command[4]} {spi/reader/scp/command[5]} {spi/reader/scp/command[6]} {spi/reader/scp/command[7]}]]
+#create_debug_port u_ila_0 probe
+#set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe1]
+#set_property port_width 8 [get_debug_ports u_ila_0/probe1]
+#connect_debug_port u_ila_0/probe1 [get_nets [list {spi/spi_data[0]} {spi/spi_data[1]} {spi/spi_data[2]} {spi/spi_data[3]} {spi/spi_data[4]} {spi/spi_data[5]} {spi/spi_data[6]} {spi/spi_data[7]}]]
+#create_debug_port u_ila_0 probe
+#set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe2]
+#set_property port_width 1 [get_debug_ports u_ila_0/probe2]
+#connect_debug_port u_ila_0/probe2 [get_nets [list spi/reader/sbr/sck_posedge]]
+#create_debug_port u_ila_0 probe
+#set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe3]
+#set_property port_width 1 [get_debug_ports u_ila_0/probe3]
+#connect_debug_port u_ila_0/probe3 [get_nets [list spi_cs_IBUF]]
+#create_debug_port u_ila_0 probe
+#set_property port_width 1 [get_debug_ports u_ila_0/probe4]
+#connect_debug_port u_ila_0/probe4 [get_nets [list spi_mosi_IBUF]]
+#create_debug_port u_ila_0 probe
+#set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe5]
+#set_property port_width 1 [get_debug_ports u_ila_0/probe5]
+#connect_debug_port u_ila_0/probe5 [get_nets [list fb_reset_OBUF]]
+#set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
+#set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
+#set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
+#connect_debug_port dbg_hub/clk [get_nets pixel_clk]

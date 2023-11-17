@@ -22,7 +22,7 @@ module top (
     input logic spi_cs,
     input logic spi_clk,
     input logic spi_mosi,
-//    output logic spi_miso,
+    output logic spi_miso,
     output logic fb_reset
 );
     // for now, pin reset to low

@@ -8,7 +8,7 @@ module spi_byte_reader (
     output logic byte_read, // Positive for one clock cycle every time a new byte is read
     output logic[7:0] data  // The latest read byte
 );
-    logic sck_posedge;
+    (* dont_touch = "yes" *) logic sck_posedge;
     posedge_detect pe_det_sck(clock, sck, sck_posedge);
 
     logic internal_byte_read;
