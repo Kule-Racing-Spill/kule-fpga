@@ -33,3 +33,13 @@ src/ips/framebuffer_bram/sim/framebuffer_bram.v
 src/ips/framebuffer_bram/simulation/blk_mem_gen_v8_4.v
 src/ips/framebuffer_bram/summary.log
 src/ips/pixel_clock_wiz/doc/clk_wiz_v6_0_changelog.txt
+src/ips/sprite_bram/sprite_bram.xml
+src/ips/sprite_bram/hdl/blk_mem_gen_v8_4_vhsyn_rfs.vhd
+src/ips/sprite_bram/sprite_bram.dcp
+src/ips/sprite_bram/sprite_bram.mif
+src/ips/sprite_bram/sprite_bram_ooc.xdc
+src/ips/sprite_bram/sprite_bram_sim_netlist.v
+src/ips/sprite_bram/sprite_bram_sim_netlist.vhdl
+src/ips/sprite_bram/sprite_bram_stub.v
+src/ips/sprite_bram/sprite_bram_stub.vhdl
+src/ips/sprite_bram/synth/sprite_bram.vhd
