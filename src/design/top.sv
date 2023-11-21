@@ -23,7 +23,8 @@ module top (
     input logic spi_clk,
     input logic spi_mosi,
     output logic spi_miso,
-    output logic fb_reset
+    output logic fb_reset,
+    output logic fpga_ready
 );
     // for now, pin reset to low
     logic reset = 0;
@@ -31,6 +32,8 @@ module top (
     // clock and lock signal for clocking wizard
     wire logic pixel_clk;
     logic locked;
+    
+    assign fpga_ready = !locked;
             
     // generate pixel clock
     pixel_clock_wiz pix_clock(

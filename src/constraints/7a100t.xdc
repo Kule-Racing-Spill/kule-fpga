@@ -1,7 +1,7 @@
 ## Pinout generated for U4 (XC7A100T-FTG256)
 #set_property -dict { PACKAGE_PIN A10    IOSTANDARD LVCMOS33 } [get_ports { pin_FPGA_GPIO2 }];
 #set_property -dict { PACKAGE_PIN A12    IOSTANDARD LVCMOS33 } [get_ports { pin_FPGA_GPIO6 }];
-#set_property -dict { PACKAGE_PIN B9    IOSTANDARD LVCMOS33 } [get_ports { pin_FPGA_GPIO1 }];
+
 #set_property -dict { PACKAGE_PIN B10    IOSTANDARD LVCMOS33 } [get_ports { pin_FPGA_GPIO3 }];
 #set_property -dict { PACKAGE_PIN B11    IOSTANDARD LVCMOS33 } [get_ports { pin_FPGA_GPIO4 }];
 #set_property -dict { PACKAGE_PIN B12    IOSTANDARD LVCMOS33 } [get_ports { pin_FPGA_GPIO5 }];
@@ -149,6 +149,7 @@ set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets spi_clk_IBUF]
 
 ### GPIO ###
 set_property -dict {PACKAGE_PIN A9 IOSTANDARD LVCMOS33} [get_ports fb_reset]
+set_property -dict { PACKAGE_PIN B9    IOSTANDARD LVCMOS33 } [get_ports { fpga_ready }];
 
 
 #create_debug_core u_ila_0 ila
