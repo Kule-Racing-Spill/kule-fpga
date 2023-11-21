@@ -31,7 +31,7 @@ module vga_colormap(
     reg [14:0] colors [0:15];
     
     initial begin
-        colors[0] <= 15'b000000000100001; // Dark grey (#232228)
+        colors[15] <= 15'b000000000100001; // Dark grey (#232228)
         colors[1] <= 15'b010000101001010; // grey (#5f5854)
         colors[2] <= 15'b100111001101101; // light grey / beige (#b8b095)
         colors[3] <= 15'b001000010101100; // dark blue (#284261)
@@ -47,7 +47,7 @@ module vga_colormap(
         colors[13] <= 15'b101101111110110; // green-white (#c3d5c7)
         colors[14] <= 15'b111001110011111; // off-white (#ebecdc)
         // colors[15] is transparent
-        colors[15] <= 15'b000000000000000;
+        colors[0] <= 15'b000000000000000;
     end
     
     // drive the color

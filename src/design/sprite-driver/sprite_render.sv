@@ -98,7 +98,7 @@ module sprite_render #(
             end
             
             // Don't draw transparent
-            if (sprite_r_data == 4'b1111) drawing <= 0;
+            if (sprite_r_data == 4'b0000) drawing <= 0;
             else pix <= sprite_r_data;
 
         end else drawing <= 0;
