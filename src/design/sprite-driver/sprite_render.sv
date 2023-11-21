@@ -68,18 +68,18 @@ module sprite_render #(
             drawing <= 1;
             if (max_count_x == 0 || max_count_y == 0) drawing <= 0;
             if (outside_bounding_box) drawing <= 0;
-            if (writing_x == sprite_scale - 1) begin
+            if (writing_x == sprite_scale) begin
                 reading_x <= 0;
                 writing_x <= 0;
                 count_x <= 1;
                 
-                if (writing_y == sprite_scale - 1) begin
+                if (writing_y == sprite_scale) begin
                     finish <= 1;
                     reading_y <= 0;
                     writing_y <= 0;
                     count_y <= 1;
                 end else begin
-                    writing_y <= writing_y + 1;
+                    if (max_count_y != 0) writing_y <= writing_y + 1;
                     if (count_y >= max_count_y) begin
                         reading_y <= reading_y + 1;
                         count_y <= 1;
@@ -88,7 +88,7 @@ module sprite_render #(
                     end
                 end
             end else begin
-                writing_x <= writing_x + 1;
+                if (max_count_x != 0) writing_x <= writing_x + 1;
                 if (count_x >= max_count_x) begin
                     reading_x <= reading_x + 1;
                     count_x <= 1;
