@@ -60,7 +60,7 @@ module spi_store_write_controller(
     output logic [SPRITE_ADDR_SIZE:0] w_addr, // NB: addresses 4-bits, not bytes
     output logic [7:0] w_data
     );
-    assign w_data = data;
+    assign w_data = { data[3:0], data[7:4] };
 
     always_ff @(posedge clock) begin
         if (reset) begin
@@ -73,7 +73,7 @@ module spi_store_write_controller(
                     w_addr <= 0;
                 end else begin
                     w_en <= 1;
-                    w_addr <= (data_index - 1) << 1;
+                    w_addr <= data_index << 1;
                 end
             end
         end
