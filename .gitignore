@@ -43,3 +43,10 @@ src/ips/sprite_bram/sprite_bram_sim_netlist.vhdl
 src/ips/sprite_bram/sprite_bram_stub.v
 src/ips/sprite_bram/sprite_bram_stub.vhdl
 src/ips/sprite_bram/synth/sprite_bram.vhd
+framebuffer_bram.mif
+sprite_bram.mif
+src/ips/sprite_bram/doc/blk_mem_gen_v8_4_changelog.txt
+src/ips/sprite_bram/misc/blk_mem_gen_v8_4.vhd
+src/ips/sprite_bram/sim/sprite_bram.v
+src/ips/sprite_bram/simulation/blk_mem_gen_v8_4.v
+src/ips/sprite_bram/summary.log
