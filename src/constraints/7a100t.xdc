@@ -126,8 +126,9 @@ set_property -dict {PACKAGE_PIN H4 IOSTANDARD LVCMOS33} [get_ports {lcd_blue[6]}
 set_property -dict {PACKAGE_PIN J5 IOSTANDARD LVCMOS33} [get_ports {lcd_blue[7]}]
 
 # LCD control
-set_property -dict { PACKAGE_PIN H2    IOSTANDARD LVCMOS33 } [get_ports { lcd_dot_clk }];
-set_property -dict { PACKAGE_PIN H1    IOSTANDARD LVCMOS33 } [get_ports { lcd_display }];
+
+#set_property -dict { PACKAGE_PIN H2    IOSTANDARD LVCMOS33 } [get_ports { lcd_dot_clk }];
+#set_property -dict { PACKAGE_PIN H1    IOSTANDARD LVCMOS33 } [get_ports { lcd_display }];
 
 # LCD syncs
 set_property -dict {PACKAGE_PIN J3 IOSTANDARD LVCMOS33} [get_ports lcd_hsync]
@@ -187,3 +188,19 @@ set_property -dict {PACKAGE_PIN A9 IOSTANDARD LVCMOS33} [get_ports fb_reset]
 #set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
 #set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
 #connect_debug_port dbg_hub/clk [get_nets pixel_clk]
+
+set_property CONFIG_MODE SPIx4 [current_design]
+
+set_property BITSTREAM.GENERAL.COMPRESS False [current_design]
+
+set_property BITSTREAM.CONFIG.CONFIGRATE 50 [current_design]
+
+set_property CONFIG_VOLTAGE 3.3 [current_design]
+
+set_property CFGBVS VCCO [current_design]
+
+set_property BITSTREAM.CONFIG.SPI_32BIT_ADDR No [current_design]
+
+set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
+
+set_property BITSTREAM.CONFIG.SPI_FALL_EDGE YES [current_design]
